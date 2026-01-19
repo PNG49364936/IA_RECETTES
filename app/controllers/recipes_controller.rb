@@ -88,7 +88,7 @@ class RecipesController < ApplicationController
 
   def recipe_params
     params.require(:recipe).permit(
-      :choice, :guests, :diet, :cuisine, :duration,
+      :choice, :guests, :diet, :age_range, :cuisine, :duration,
       :difficulty, :ingredient1, :ingredient2,
       :ingredient3, :ingredient4,
       :excluded1, :excluded2, :excluded3, :excluded4,

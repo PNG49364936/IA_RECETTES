@@ -56,6 +56,8 @@ class ClaudeRecipeService
 
       #{contrainte_healthy}
 
+      #{contrainte_enfant}
+
       Réponds en français avec ce format exact (utilise le format Markdown):
 
       ## [Nom de la recette]
@@ -145,6 +147,34 @@ class ClaudeRecipeService
       - Limiter le sel et utiliser des herbes et épices pour assaisonner
       - Favoriser les cuissons douces (vapeur, four, poêle avec peu de matière grasse)
       - IMPORTANT: Malgré ces contraintes, la recette doit rester gourmande et goûteuse. Utilise des associations de saveurs, des épices, des herbes fraîches et des techniques de cuisson qui rehaussent le goût.
+    CONTRAINTE
+  end
+
+  def contrainte_enfant
+    return "" unless @recipe.diet == 'Enfant'
+
+    <<~CONTRAINTE
+      **CONTRAINTE STRICTE - RECETTE POUR ENFANT (#{@recipe.age_range}):**
+      Cette recette est destinée à un enfant de #{@recipe.age_range}. Tu DOIS absolument respecter ces règles:
+
+      ALIMENTS STRICTEMENT INTERDITS:
+      - Abats (foie, rognons, etc.)
+      - Piments, épices fortes ou piquantes
+      - Tout ingrédient à base d'alcool (vin, bière, liqueur, même pour déglacer)
+      - Fruits de mer crus
+      - Viandes crues ou peu cuites
+      - Fromages au lait cru
+      - Miel (pour les moins de 3 ans)
+
+      RÈGLES OBLIGATOIRES:
+      - Quantités adaptées à l'âge: portions plus petites qu'un adulte
+      - Textures adaptées à l'âge (plus tendres pour les 2-5 ans)
+      - Saveurs douces et peu salées
+      - Peu ou pas de sauce (sauf sauce tomate nature)
+      - Présentation ludique et colorée pour donner envie à l'enfant
+      - Aliments faciles à mâcher et à digérer
+
+      IMPORTANT: La recette doit rester appétissante et gourmande pour plaire aux enfants.
     CONTRAINTE
   end
 end

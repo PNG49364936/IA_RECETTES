@@ -57,6 +57,19 @@
             </div>
           </fieldset>
 
+          <!-- Tranche d'âge (visible uniquement si Enfant sélectionné) -->
+          <fieldset class="mb-4 d-none" id="ageRangeFieldset">
+            <legend class="form-label fw-bold">Tranche d'âge de l'enfant</legend>
+            <div class="d-flex flex-wrap gap-4">
+              <% Recipe::AGE_RANGES.each do |age_range| %>
+                <div class="form-check">
+                  <%= f.radio_button :age_range, age_range, class: "form-check-input", id: "age_range_#{age_range.parameterize}" %>
+                  <%= f.label :age_range, age_range, class: "form-check-label", for: "age_range_#{age_range.parameterize}" %>
+                </div>
+              <% end %>
+            </div>
+          </fieldset>
+
           <!-- Type de cuisine -->
           <fieldset class="mb-4">
             <legend class="form-label fw-bold">Type de cuisine</legend>
@@ -398,5 +411,37 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // === Gestion Régime "Enfant" (afficher tranche d'âge) ===
+  const dietRadios = document.querySelectorAll('input[name="recipe[diet]"]');
+  const ageRangeFieldset = document.getElementById('ageRangeFieldset');
+  const ageRangeRadios = document.querySelectorAll('input[name="recipe[age_range]"]');
+
+  function handleDietChange() {
+    const selectedDiet = document.querySelector('input[name="recipe[diet]"]:checked');
+
+    if (selectedDiet && selectedDiet.value === 'Enfant') {
+      // Afficher le champ tranche d'âge
+      ageRangeFieldset.classList.remove('d-none');
+      afficherNotification(
+        'Recette pour enfant',
+        'Veuillez sélectionner la tranche d\'âge de l\'enfant.',
+        'info'
+      );
+    } else {
+      // Masquer le champ tranche d'âge et décocher
+      ageRangeFieldset.classList.add('d-none');
+      ageRangeRadios.forEach(function(radio) {
+        radio.checked = false;
+      });
+    }
+  }
+
+  dietRadios.forEach(function(radio) {
+    radio.addEventListener('change', handleDietChange);
+  });
+
+  // Vérifier l'état initial pour "Enfant"
+  handleDietChange();
 });
 </script>
