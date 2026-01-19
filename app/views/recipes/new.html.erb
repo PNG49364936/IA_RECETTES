@@ -240,7 +240,7 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initFormBehaviors() {
   // === Gestion de l'overlay de chargement ===
   const form = document.querySelector('form');
   const loadingOverlay = document.getElementById('loadingOverlay');
@@ -443,5 +443,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Vérifier l'état initial pour "Enfant"
   handleDietChange();
-});
+}
+
+// Écouter les deux événements pour compatibilité avec Turbo
+document.addEventListener('DOMContentLoaded', initFormBehaviors);
+document.addEventListener('turbo:load', initFormBehaviors);
 </script>
