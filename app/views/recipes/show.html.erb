@@ -13,12 +13,16 @@
         <div class="d-flex flex-wrap justify-content-center gap-2">
           <%= link_to "Nouvelle recette", new_recipe_path, class: "btn btn-primary-custom" %>
 
-          <!-- Boutons visibles uniquement sur PC -->
-          <button type="button" class="btn btn-secondary print-only" onclick="window.print()">
+          <!-- Bouton Imprimer visible uniquement sur PC -->
+          <button type="button" class="btn btn-secondary d-none d-lg-inline-block" onclick="window.print()">
             Imprimer
           </button>
 
-          <%= link_to "Télécharger PDF", download_pdf_recipes_path(key: @cache_key), class: "btn btn-outline-secondary print-only", data: { turbo: false } %>
+          <!-- Bouton Télécharger : texte adapté selon l'écran -->
+          <%= link_to download_pdf_recipes_path(key: @cache_key), class: "btn btn-outline-secondary", data: { turbo: false } do %>
+            <span class="d-none d-lg-inline">Télécharger PDF</span>
+            <span class="d-lg-none">Télécharger</span>
+          <% end %>
         </div>
       </div>
     </div>
