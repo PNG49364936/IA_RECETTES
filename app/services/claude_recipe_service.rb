@@ -54,6 +54,8 @@ class ClaudeRecipeService
 
       #{contrainte_repas_froid}
 
+      #{contrainte_healthy}
+
       Réponds en français avec ce format exact (utilise le format Markdown):
 
       ## [Nom de la recette]
@@ -127,6 +129,22 @@ class ClaudeRecipeService
       L'utilisateur n'a PAS d'équipement de cuisson disponible. Tu DOIS proposer une recette FROIDE qui ne nécessite AUCUNE cuisson.
       Pas de plaques de cuisson, pas de four, pas d'airfryer, pas de thermomix.
       La recette doit pouvoir être préparée entièrement à froid (salades, tartares, carpaccios, verrines froides, sandwichs élaborés, etc.).
+    CONTRAINTE
+  end
+
+  def contrainte_healthy
+    return "" unless @recipe.diet == 'Healthy'
+
+    <<~CONTRAINTE
+      **CONTRAINTE STRICTE - RÉGIME HEALTHY:**
+      La recette doit être équilibrée et saine, MAIS rester gourmande et savoureuse. Tu DOIS respecter ces règles:
+      - Privilégier les légumes frais et de saison
+      - Utiliser des protéines maigres (poulet, poisson, légumineuses, tofu)
+      - Éviter les sucres ajoutés et les graisses saturées
+      - Préférer les céréales complètes aux céréales raffinées
+      - Limiter le sel et utiliser des herbes et épices pour assaisonner
+      - Favoriser les cuissons douces (vapeur, four, poêle avec peu de matière grasse)
+      - IMPORTANT: Malgré ces contraintes, la recette doit rester gourmande et goûteuse. Utilise des associations de saveurs, des épices, des herbes fraîches et des techniques de cuisson qui rehaussent le goût.
     CONTRAINTE
   end
 end

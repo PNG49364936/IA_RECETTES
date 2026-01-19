@@ -4,7 +4,7 @@ class Recipe
 
   CHOICES = ['Entrée', 'Plat principal', 'Dessert'].freeze
   GUESTS_OPTIONS = (1..6).to_a.freeze
-  DIETS = ['Sans restriction', 'Sans gluten', 'Diabétique', 'Végétarien'].freeze
+  DIETS = ['Sans restriction', 'Sans gluten', 'Diabétique', 'Végétarien', 'Healthy'].freeze
   CUISINES = ['Française', 'Italienne', 'Espagnole', 'Sud-américaine', 'Asiatique', 'Indienne'].freeze
   DURATIONS = ['Express (<15mn)', 'Rapide (15-30mn)', 'Classique (30-60mn)', 'Élaboré (>60mn)'].freeze
   DIFFICULTIES = ['Facile', 'Moyen', 'Gastronomique'].freeze
