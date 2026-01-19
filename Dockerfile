@@ -53,9 +53,9 @@ RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 # Final stage for app image
 FROM base
 
-# Install packages needed for deployment
+# Install packages needed for deployment (including wkhtmltopdf for PDF generation)
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl && \
+    apt-get install --no-install-recommends -y curl wkhtmltopdf && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
