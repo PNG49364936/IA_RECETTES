@@ -1,0 +1,49 @@
+fr:
+  errors:
+    format: "%{attribute} → %{message}"
+    messages:
+      blank: "doit être renseigné"
+      inclusion: "sélection invalide"
+      invalid: "n'est pas valide"
+      not_a_number: "n'est pas un nombre"
+      required: "doit être renseigné"
+
+  activemodel:
+    attributes:
+      recipe:
+        choice: "Type de plat"
+        guests: "Nombre de convives"
+        diet: "Régime alimentaire"
+        cuisine: "Type de cuisine"
+        duration: "Temps de préparation"
+        difficulty: "Niveau de difficulté"
+        equipments: "Équipement de cuisson"
+    errors:
+      format: "%{attribute} → %{message}"
+      messages:
+        blank: "doit être renseigné"
+        inclusion: "sélection invalide"
+        invalid: "n'est pas valide"
+      models:
+        recipe:
+          attributes:
+            choice:
+              blank: "doit être renseigné"
+              inclusion: "sélection invalide"
+            guests:
+              blank: "doit être renseigné"
+              inclusion: "sélection invalide"
+            diet:
+              blank: "doit être renseigné"
+              inclusion: "sélection invalide"
+            cuisine:
+              blank: "doit être renseigné"
+              inclusion: "sélection invalide"
+            duration:
+              blank: "doit être renseigné"
+              inclusion: "sélection invalide"
+            difficulty:
+              blank: "doit être renseigné"
+              inclusion: "sélection invalide"
+            equipments:
+              blank: "doit être renseigné"

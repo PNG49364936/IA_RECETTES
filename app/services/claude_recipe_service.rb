@@ -1,0 +1,132 @@
+class ClaudeRecipeService
+  def initialize(recipe)
+    @recipe = recipe
+  end
+
+  def generate
+    client = Anthropic::Client.new(api_key: ENV['ANTHROPIC_API_KEY'])
+
+    response = client.messages.create(
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 4000,
+      messages: [
+        {
+          role: 'user',
+          content: build_prompt
+        }
+      ]
+    )
+
+    response.content.first.text
+  rescue Anthropic::AuthenticationError => e
+    Rails.logger.error("Erreur authentification Claude: #{e.message}")
+    nil
+  rescue Anthropic::RateLimitError => e
+    Rails.logger.error("Limite de taux API Claude: #{e.message}")
+    nil
+  rescue Anthropic::InvalidRequestError => e
+    Rails.logger.error("Requête invalide Claude: #{e.message}")
+    nil
+  rescue StandardError => e
+    Rails.logger.error("Erreur inattendue: #{e.class} - #{e.message}")
+    nil
+  end
+
+  private
+
+  def build_prompt
+    <<~PROMPT
+      Tu es un chef cuisinier expert français. Génère une recette détaillée et créative avec ces critères:
+
+      - Type de plat: #{@recipe.choice}
+      - Nombre de convives: #{@recipe.guests}
+      - Régime alimentaire: #{@recipe.diet}
+      - Type de cuisine: #{@recipe.cuisine}
+      - Temps total disponible: #{@recipe.duration}
+      - Niveau de difficulté: #{@recipe.difficulty}
+      - Équipements disponibles: #{@recipe.equipments_text}
+      - Ingrédients souhaités à inclure obligatoirement: #{@recipe.ingredients_text}
+      - Ingrédients INTERDITS (ne JAMAIS utiliser): #{@recipe.excluded_ingredients_text}
+
+      #{contrainte_ingredients}
+
+      #{contrainte_exclusions}
+
+      #{contrainte_repas_froid}
+
+      Réponds en français avec ce format exact (utilise le format Markdown):
+
+      ## [Nom de la recette]
+
+      **Temps de préparation:** [X minutes]
+      **Temps de cuisson:** [X minutes]
+      **Difficulté:** #{@recipe.difficulty}
+
+      ### Ingrédients (pour #{@recipe.guests} personne#{'s' if @recipe.guests > 1})
+
+      - [Ingrédient]: [quantité précise en grammes ou unités]
+      - ...
+
+      ### Préparation
+
+      1. [Étape détaillée avec temps et température si applicable]
+      2. [Étape suivante]
+      3. ...
+
+      ### Conseils du chef
+
+      - [2-3 conseils pratiques pour réussir la recette]
+    PROMPT
+  end
+
+  def contrainte_ingredients
+    user_ingredients_count = @recipe.ingredients.count
+
+    case @recipe.duration
+    when 'Express (<15mn)'
+      max_total = 4
+      remaining = [max_total - user_ingredients_count, 0].max
+      <<~CONTRAINTE
+        **CONTRAINTE IMPORTANTE - RECETTE EXPRESS:**
+        La recette doit utiliser EXACTEMENT #{max_total} ingrédients au total (hors sel, poivre, huile).
+        L'utilisateur a déjà spécifié #{user_ingredients_count} ingrédient(s) que tu DOIS inclure.
+        Tu peux donc ajouter au maximum #{remaining} ingrédient(s) supplémentaire(s).
+        Ceci est une contrainte STRICTE pour une recette rapide.
+      CONTRAINTE
+    when 'Rapide (15-30mn)'
+      max_total = 5
+      remaining = [max_total - user_ingredients_count, 0].max
+      <<~CONTRAINTE
+        **CONTRAINTE IMPORTANTE - RECETTE RAPIDE:**
+        La recette doit utiliser EXACTEMENT #{max_total} ingrédients au total (hors sel, poivre, huile).
+        L'utilisateur a déjà spécifié #{user_ingredients_count} ingrédient(s) que tu DOIS inclure.
+        Tu peux donc ajouter au maximum #{remaining} ingrédient(s) supplémentaire(s).
+        Ceci est une contrainte STRICTE pour une recette rapide.
+      CONTRAINTE
+    else
+      # Pas de contrainte pour Classique et Élaboré
+      ""
+    end
+  end
+
+  def contrainte_exclusions
+    return "" if @recipe.excluded_ingredients.empty?
+
+    <<~CONTRAINTE
+      **CONTRAINTE STRICTE - INGRÉDIENTS INTERDITS:**
+      Les ingrédients suivants sont ABSOLUMENT INTERDITS et ne doivent JAMAIS apparaître dans la recette: #{@recipe.excluded_ingredients_text}.
+      Cela inclut ces ingrédients sous toutes leurs formes (frais, surgelés, en conserve, en poudre, etc.).
+    CONTRAINTE
+  end
+
+  def contrainte_repas_froid
+    return "" unless @recipe.equipments&.include?('Sans')
+
+    <<~CONTRAINTE
+      **CONTRAINTE STRICTE - REPAS FROID:**
+      L'utilisateur n'a PAS d'équipement de cuisson disponible. Tu DOIS proposer une recette FROIDE qui ne nécessite AUCUNE cuisson.
+      Pas de plaques de cuisson, pas de four, pas d'airfryer, pas de thermomix.
+      La recette doit pouvoir être préparée entièrement à froid (salades, tartares, carpaccios, verrines froides, sandwichs élaborés, etc.).
+    CONTRAINTE
+  end
+end

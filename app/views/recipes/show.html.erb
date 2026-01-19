@@ -1,0 +1,44 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10 col-xl-8">
+    <div class="card shadow-sm recipe-card">
+      <div class="card-header bg-primary-custom">
+        <h2 class="card-title mb-0 text-white text-center">Votre recette</h2>
+      </div>
+      <div class="card-body p-4">
+        <div class="recipe-content">
+          <%= @markdown_content %>
+        </div>
+      </div>
+      <div class="card-footer bg-white">
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+          <%= link_to "Nouvelle recette", new_recipe_path, class: "btn btn-primary-custom" %>
+
+          <!-- Boutons visibles uniquement sur PC -->
+          <button type="button" class="btn btn-secondary print-only" onclick="window.print()">
+            Imprimer
+          </button>
+
+          <%= link_to "Télécharger PDF", download_pdf_recipes_path(key: @cache_key), class: "btn btn-outline-secondary print-only", data: { turbo: false } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Styles pour l'impression -->
+<style>
+  @media print {
+    header, footer, .card-footer, .print-only {
+      display: none !important;
+    }
+    .card {
+      border: none !important;
+      box-shadow: none !important;
+    }
+    .card-header {
+      background-color: #E07B39 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  }
+</style>

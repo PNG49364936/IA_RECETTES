@@ -1,0 +1,402 @@
+<div class="row justify-content-center">
+  <!-- Colonne formulaire -->
+  <div class="col-12 col-lg-7 col-xl-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary-custom">
+        <h2 class="card-title mb-0 text-white text-center">Créer ma recette</h2>
+      </div>
+      <div class="card-body p-4">
+        <%= form_with model: @recipe, url: recipes_path, method: :post, local: true do |f| %>
+
+          <% if @recipe.errors.any? %>
+            <div class="alert alert-danger border-0 shadow-sm">
+              <div class="d-flex align-items-center mb-2">
+                <i class="bi bi-exclamation-circle-fill fs-4 me-2"></i>
+                <h5 class="mb-0 fw-bold">Veuillez corriger les erreurs suivantes</h5>
+              </div>
+              <ul class="mb-0 ps-4">
+                <% @recipe.errors[:base].each do |message| %>
+                  <li class="py-1"><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          <% end %>
+
+          <!-- Type de plat -->
+          <fieldset class="mb-4">
+            <legend class="form-label fw-bold">Type de plat</legend>
+            <div class="d-flex flex-wrap gap-4">
+              <% Recipe::CHOICES.each do |choice| %>
+                <div class="form-check">
+                  <%= f.radio_button :choice, choice, class: "form-check-input", id: "choice_#{choice.parameterize}" %>
+                  <%= f.label :choice, choice, class: "form-check-label", for: "choice_#{choice.parameterize}" %>
+                </div>
+              <% end %>
+            </div>
+          </fieldset>
+
+          <!-- Nombre de convives -->
+          <fieldset class="mb-4">
+            <legend class="form-label fw-bold">Nombre de convives</legend>
+            <%= f.select :guests,
+                options_for_select(Recipe::GUESTS_OPTIONS.map { |n| ["#{n} personne#{'s' if n > 1}", n] }, @recipe.guests),
+                { include_blank: "Sélectionner..." },
+                class: "form-select", style: "max-width: 200px;" %>
+          </fieldset>
+
+          <!-- Régime alimentaire -->
+          <fieldset class="mb-4">
+            <legend class="form-label fw-bold">Régime et restrictions</legend>
+            <div class="d-flex flex-wrap gap-4">
+              <% Recipe::DIETS.each do |diet| %>
+                <div class="form-check">
+                  <%= f.radio_button :diet, diet, class: "form-check-input", id: "diet_#{diet.parameterize}" %>
+                  <%= f.label :diet, diet, class: "form-check-label", for: "diet_#{diet.parameterize}" %>
+                </div>
+              <% end %>
+            </div>
+          </fieldset>
+
+          <!-- Type de cuisine -->
+          <fieldset class="mb-4">
+            <legend class="form-label fw-bold">Type de cuisine</legend>
+            <div class="row">
+              <% Recipe::CUISINES.each_slice(3) do |cuisine_group| %>
+                <% cuisine_group.each do |cuisine| %>
+                  <div class="col-6 col-md-4 mb-2">
+                    <div class="form-check">
+                      <%= f.radio_button :cuisine, cuisine, class: "form-check-input", id: "cuisine_#{cuisine.parameterize}" %>
+                      <%= f.label :cuisine, cuisine, class: "form-check-label", for: "cuisine_#{cuisine.parameterize}" %>
+                    </div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </fieldset>
+
+          <!-- Niveau de difficulté -->
+          <fieldset class="mb-4">
+            <legend class="form-label fw-bold">Niveau de difficulté</legend>
+            <div class="d-flex flex-wrap gap-4">
+              <% Recipe::DIFFICULTIES.each do |difficulty| %>
+                <div class="form-check">
+                  <%= f.radio_button :difficulty, difficulty, class: "form-check-input", id: "difficulty_#{difficulty.parameterize}" %>
+                  <%= f.label :difficulty, difficulty, class: "form-check-label", for: "difficulty_#{difficulty.parameterize}" %>
+                </div>
+              <% end %>
+            </div>
+          </fieldset>
+
+          <!-- Temps total -->
+          <fieldset class="mb-4">
+            <legend class="form-label fw-bold">Temps total (préparation + cuisson)</legend>
+            <div class="row">
+              <% Recipe::DURATIONS.each do |duration| %>
+                <div class="col-6 col-md-3 mb-2">
+                  <div class="form-check">
+                    <%= f.radio_button :duration, duration, class: "form-check-input", id: "duration_#{duration.parameterize}" %>
+                    <%= f.label :duration, duration, class: "form-check-label", for: "duration_#{duration.parameterize}" %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </fieldset>
+
+          <!-- Équipement de cuisson (sélection multiple) -->
+          <fieldset class="mb-4">
+            <legend class="form-label fw-bold">Équipement de cuisson <small class="text-muted">(plusieurs choix possibles)</small></legend>
+            <div class="row">
+              <% Recipe::EQUIPMENTS.each do |equipment| %>
+                <div class="col-6 col-md-3 mb-2">
+                  <div class="form-check">
+                    <%= check_box_tag "recipe[equipments][]", equipment,
+                        @recipe.equipments&.include?(equipment),
+                        class: "form-check-input",
+                        id: "equipment_#{equipment.parameterize}" %>
+                    <%= label_tag "equipment_#{equipment.parameterize}", equipment, class: "form-check-label" %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </fieldset>
+
+          <!-- Ingrédients souhaités -->
+          <fieldset class="mb-4">
+            <legend class="form-label fw-bold">Ingrédients souhaités <small class="text-muted">(optionnel, 4 maximum)</small></legend>
+            <div class="row g-2">
+              <div class="col-6 col-md-3">
+                <%= f.text_field :ingredient1, class: "form-control", placeholder: "Ingrédient 1" %>
+              </div>
+              <div class="col-6 col-md-3">
+                <%= f.text_field :ingredient2, class: "form-control", placeholder: "Ingrédient 2" %>
+              </div>
+              <div class="col-6 col-md-3">
+                <%= f.text_field :ingredient3, class: "form-control", placeholder: "Ingrédient 3" %>
+              </div>
+              <div class="col-6 col-md-3">
+                <%= f.text_field :ingredient4, class: "form-control", placeholder: "Ingrédient 4" %>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Ingrédients non autorisés -->
+          <fieldset class="mb-4">
+            <legend class="form-label fw-bold">Ingrédients non autorisés <small class="text-muted">(optionnel, 4 maximum)</small></legend>
+            <div class="row g-2">
+              <div class="col-6 col-md-3">
+                <%= f.text_field :excluded1, class: "form-control", placeholder: "Ingrédient 1" %>
+              </div>
+              <div class="col-6 col-md-3">
+                <%= f.text_field :excluded2, class: "form-control", placeholder: "Ingrédient 2" %>
+              </div>
+              <div class="col-6 col-md-3">
+                <%= f.text_field :excluded3, class: "form-control", placeholder: "Ingrédient 3" %>
+              </div>
+              <div class="col-6 col-md-3">
+                <%= f.text_field :excluded4, class: "form-control", placeholder: "Ingrédient 4" %>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Bouton de soumission -->
+          <div class="d-grid gap-2 mt-4">
+            <%= f.submit "Générer ma recette", class: "btn btn-primary-custom btn-lg", data: { turbo: false, disable_with: "Génération en cours..." } %>
+          </div>
+
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Colonne images (visible uniquement sur grands écrans) -->
+  <div class="col-lg-3 col-xl-3 d-none d-lg-block">
+    <div class="d-flex flex-column gap-4 sticky-top" style="top: 20px;">
+      <!-- Paella -->
+      <div class="food-image-card">
+        <%= image_tag "paella.jpg",
+            alt: "Paella espagnole",
+            class: "img-fluid rounded shadow-sm food-image" %>
+        <div class="food-image-label">Paella</div>
+      </div>
+
+      <!-- Pizza -->
+      <div class="food-image-card">
+        <%= image_tag "pizza.jpg",
+            alt: "Pizza italienne",
+            class: "img-fluid rounded shadow-sm food-image" %>
+        <div class="food-image-label">Pizza</div>
+      </div>
+
+      <!-- Poulet rôti frites -->
+      <div class="food-image-card">
+        <%= image_tag "poulet-frites.jpg",
+            alt: "Poulet rôti et frites",
+            class: "img-fluid rounded shadow-sm food-image" %>
+        <div class="food-image-label">Poulet rôti frites</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Overlay de chargement -->
+<div id="loadingOverlay" class="loading-overlay d-none">
+  <div class="loading-content">
+    <div class="loading-spinner">
+      <div class="spinner-circle"></div>
+      <i class="bi bi-egg-fried loading-icon"></i>
+    </div>
+    <h4 class="loading-title mt-4">Création de votre recette</h4>
+    <p id="loadingMessage" class="loading-message">Analyse de vos préférences...</p>
+    <div class="loading-progress">
+      <div class="loading-progress-bar"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast pour les notifications -->
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100;">
+  <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <i class="bi bi-info-circle-fill me-2" id="toastIcon"></i>
+      <strong class="me-auto" id="toastTitle">Information</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fermer"></button>
+    </div>
+    <div class="toast-body" id="toastMessage">
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // === Gestion de l'overlay de chargement ===
+  const form = document.querySelector('form');
+  const loadingOverlay = document.getElementById('loadingOverlay');
+  const loadingMessage = document.getElementById('loadingMessage');
+
+  const messages = [
+    "Analyse de vos préférences...",
+    "Sélection des meilleurs ingrédients...",
+    "Notre chef prépare votre recette...",
+    "Rédaction des étapes de préparation...",
+    "Calcul des quantités...",
+    "Ajout des conseils du chef...",
+    "Finalisation de votre recette..."
+  ];
+
+  let messageIndex = 0;
+  let messageInterval;
+
+  function rotateMessages() {
+    messageIndex = (messageIndex + 1) % messages.length;
+    loadingMessage.style.opacity = '0';
+    setTimeout(() => {
+      loadingMessage.textContent = messages[messageIndex];
+      loadingMessage.style.opacity = '1';
+    }, 300);
+  }
+
+  form.addEventListener('submit', function(e) {
+    // Vérifier si le formulaire est valide (côté client)
+    const submitBtn = form.querySelector('input[type="submit"]');
+
+    // Afficher l'overlay après un court délai pour permettre la validation HTML5
+    setTimeout(() => {
+      loadingOverlay.classList.remove('d-none');
+      document.body.style.overflow = 'hidden';
+      messageIndex = 0;
+      loadingMessage.textContent = messages[0];
+      messageInterval = setInterval(rotateMessages, 1500);
+    }, 100);
+  });
+
+  // === Fonction pour afficher une notification toast ===
+  function afficherNotification(titre, message, type) {
+    const toastEl = document.getElementById('notificationToast');
+    const toastTitle = document.getElementById('toastTitle');
+    const toastMessage = document.getElementById('toastMessage');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastHeader = toastEl.querySelector('.toast-header');
+
+    toastTitle.textContent = titre;
+    toastMessage.textContent = message;
+
+    // Réinitialiser les classes
+    toastHeader.classList.remove('bg-info', 'bg-warning', 'bg-primary', 'text-white');
+    toastIcon.classList.remove('text-info', 'text-warning', 'text-primary');
+
+    // Appliquer le style selon le type
+    if (type === 'info') {
+      toastHeader.classList.add('bg-info', 'text-white');
+      toastIcon.className = 'bi bi-info-circle-fill me-2';
+    } else if (type === 'attention') {
+      toastHeader.classList.add('bg-warning');
+      toastIcon.className = 'bi bi-exclamation-triangle-fill me-2';
+    } else if (type === 'cuisine') {
+      toastHeader.classList.add('bg-primary', 'text-white');
+      toastIcon.className = 'bi bi-snow me-2';
+    }
+
+    const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+    toast.show();
+  }
+
+  // === Gestion Gastronomique / Express ===
+  const difficultyRadios = document.querySelectorAll('input[name="recipe[difficulty]"]');
+  const expressRadio = document.getElementById('duration_express-15mn');
+  const expressLabel = document.querySelector('label[for="duration_express-15mn"]');
+
+  function handleDifficultyChange() {
+    const selectedDifficulty = document.querySelector('input[name="recipe[difficulty]"]:checked');
+
+    if (selectedDifficulty && selectedDifficulty.value === 'Gastronomique') {
+      if (expressRadio) {
+        expressRadio.disabled = true;
+        expressRadio.checked = false;
+        if (expressLabel) {
+          expressLabel.classList.add('text-muted');
+          expressLabel.style.textDecoration = 'line-through';
+        }
+      }
+      afficherNotification(
+        'Niveau Gastronomique',
+        'Le temps de préparation minimum est de 16 minutes pour ce niveau de difficulté.',
+        'attention'
+      );
+    } else {
+      if (expressRadio) {
+        expressRadio.disabled = false;
+        if (expressLabel) {
+          expressLabel.classList.remove('text-muted');
+          expressLabel.style.textDecoration = 'none';
+        }
+      }
+    }
+  }
+
+  difficultyRadios.forEach(function(radio) {
+    radio.addEventListener('change', handleDifficultyChange);
+  });
+  handleDifficultyChange();
+
+  // === Gestion Équipement "Sans" (repas froid) ===
+  const equipmentCheckboxes = document.querySelectorAll('input[name="recipe[equipments][]"]');
+  const sansCheckbox = document.getElementById('equipment_sans');
+
+  function handleEquipmentChange(e) {
+    const clickedCheckbox = e.target;
+
+    if (clickedCheckbox.id === 'equipment_sans' && clickedCheckbox.checked) {
+      // "Sans" coché : décocher et désactiver les autres
+      equipmentCheckboxes.forEach(function(cb) {
+        if (cb.id !== 'equipment_sans') {
+          cb.checked = false;
+          cb.disabled = true;
+          const label = document.querySelector('label[for="' + cb.id + '"]');
+          if (label) {
+            label.classList.add('text-muted');
+          }
+        }
+      });
+      afficherNotification(
+        'Repas froid',
+        'La recette générée sera un plat froid ne nécessitant aucune cuisson.',
+        'cuisine'
+      );
+    } else if (clickedCheckbox.id === 'equipment_sans' && !clickedCheckbox.checked) {
+      // "Sans" décoché : réactiver les autres
+      equipmentCheckboxes.forEach(function(cb) {
+        if (cb.id !== 'equipment_sans') {
+          cb.disabled = false;
+          const label = document.querySelector('label[for="' + cb.id + '"]');
+          if (label) {
+            label.classList.remove('text-muted');
+          }
+        }
+      });
+    } else if (clickedCheckbox.id !== 'equipment_sans' && clickedCheckbox.checked) {
+      // Autre équipement coché : décocher "Sans"
+      if (sansCheckbox) {
+        sansCheckbox.checked = false;
+      }
+    }
+  }
+
+  equipmentCheckboxes.forEach(function(cb) {
+    cb.addEventListener('change', handleEquipmentChange);
+  });
+
+  // Vérifier l'état initial pour "Sans"
+  if (sansCheckbox && sansCheckbox.checked) {
+    equipmentCheckboxes.forEach(function(cb) {
+      if (cb.id !== 'equipment_sans') {
+        cb.checked = false;
+        cb.disabled = true;
+        const label = document.querySelector('label[for="' + cb.id + '"]');
+        if (label) {
+          label.classList.add('text-muted');
+        }
+      }
+    });
+  }
+});
+</script>

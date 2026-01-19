@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>Recettes IA</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="bg-light">
+    <div class="header-wrapper">
+      <header class="header-custom">
+        <div class="header-content">
+          <h1 class="text-center mb-0">
+            <a href="<%= root_path %>" class="text-decoration-none header-title">
+              Recettes IA
+            </a>
+          </h1>
+        </div>
+      </header>
+    </div>
+
+    <main class="container pb-5">
+      <% if flash[:alert].present? %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= flash[:alert] %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+      <% end %>
+
+      <% if flash[:notice].present? %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= flash[:notice] %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+
+    <footer class="footer-custom py-3 mt-auto">
+      <div class="container text-center">
+        <small class="text-muted">Recettes IA - Propulsé par Claude</small>
+      </div>
+    </footer>
+  </body>
+</html>
