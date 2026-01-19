@@ -4,7 +4,8 @@ class Recipe
 
   CHOICES = ['Entrée', 'Plat principal', 'Dessert'].freeze
   GUESTS_OPTIONS = (1..6).to_a.freeze
-  DIETS = ['Sans restriction', 'Sans gluten', 'Diabétique', 'Végétarien', 'Healthy', 'enfant'].freeze
+  DIETS = ['Sans restriction', 'Sans gluten', 'Diabétique', 'Végétarien', 'Healthy', 'Enfant'].freeze
+  AGE_RANGES = ['2 à 5 ans', '6 à 8 ans', '8 à 10 ans'].freeze
   CUISINES = ['Française', 'Italienne', 'Espagnole', 'Sud-américaine', 'Asiatique', 'Indienne'].freeze
   DURATIONS = ['Express (<15mn)', 'Rapide (15-30mn)', 'Classique (30-60mn)', 'Élaboré (>60mn)'].freeze
   DIFFICULTIES = ['Facile', 'Moyen', 'Gastronomique'].freeze
@@ -13,6 +14,7 @@ class Recipe
   attribute :choice, :string
   attribute :guests, :integer
   attribute :diet, :string
+  attribute :age_range, :string
   attribute :cuisine, :string
   attribute :duration, :string
   attribute :difficulty, :string
@@ -32,11 +34,13 @@ class Recipe
   validate :validate_all_fields
   validate :at_least_one_equipment
   validate :gastronomique_not_express
+  validate :age_range_required_for_enfant
 
   FIELD_LABELS = {
     choice: "Type de plat",
     guests: "Nombre de convives",
     diet: "Régime alimentaire",
+    age_range: "Tranche d'âge",
     cuisine: "Type de cuisine",
     duration: "Temps de préparation",
     difficulty: "Niveau de difficulté",
@@ -101,6 +105,16 @@ class Recipe
   def gastronomique_not_express
     if difficulty == 'Gastronomique' && duration == 'Express (<15mn)'
       errors.add(:base, "#{FIELD_LABELS[:duration]} → incompatible avec le niveau Gastronomique (minimum 16 minutes)")
+    end
+  end
+
+  def age_range_required_for_enfant
+    if diet == 'Enfant'
+      if age_range.blank?
+        errors.add(:base, "#{FIELD_LABELS[:age_range]} → doit être renseignée pour le régime Enfant")
+      elsif !AGE_RANGES.include?(age_range)
+        errors.add(:base, "#{FIELD_LABELS[:age_range]} → sélection invalide")
+      end
     end
   end
 end
