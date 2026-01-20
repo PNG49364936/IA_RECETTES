@@ -58,6 +58,8 @@ class ClaudeRecipeService
 
       #{contrainte_enfant}
 
+      #{contrainte_orientale}
+
       Réponds en français avec ce format exact (utilise le format Markdown):
 
       ## [Nom de la recette]
@@ -175,6 +177,27 @@ class ClaudeRecipeService
       - Aliments faciles à mâcher et à digérer
 
       IMPORTANT: La recette doit rester appétissante et gourmande pour plaire aux enfants.
+    CONTRAINTE
+  end
+
+  def contrainte_orientale
+    return "" unless @recipe.cuisine == 'Orientale'
+
+    <<~CONTRAINTE
+      **CONTRAINTE STRICTE - CUISINE ORIENTALE (HALAL):**
+      Il s'agit de cuisine d'Afrique du Nord et du Moyen-Orient (Israël non inclus).
+      Cette recette doit respecter les règles alimentaires halal. Tu DOIS absolument respecter ces règles:
+
+      VIANDES STRICTEMENT INTERDITES:
+      - Porc et tous ses dérivés (jambon, lardons, bacon, saucisse de porc, etc.)
+      - Charcuterie à base de porc
+      - Gélatine de porc
+
+      RÈGLES OBLIGATOIRES:
+      - Utiliser uniquement de la viande halal (agneau, bœuf, poulet, dinde)
+      - IMPORTANT: Si la recette contient de la viande, tu DOIS écrire "viande halal" dans la liste des ingrédients (ex: "Poulet halal", "Bœuf haché halal", "Agneau halal")
+      - Privilégier les épices orientales (cumin, coriandre, cannelle, ras el hanout, curcuma)
+      - Proposer des saveurs authentiques de la cuisine orientale (Maghreb, Moyen-Orient)
     CONTRAINTE
   end
 end

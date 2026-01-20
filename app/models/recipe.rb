@@ -6,7 +6,7 @@ class Recipe
   GUESTS_OPTIONS = (1..6).to_a.freeze
   DIETS = ['Sans restriction', 'Sans gluten', 'Diabétique', 'Végétarien', 'Healthy', 'Enfant'].freeze
   AGE_RANGES = ['2 à 5 ans', '6 à 8 ans', '8 à 10 ans'].freeze
-  CUISINES = ['Française', 'Italienne', 'Espagnole', 'Sud-américaine', 'Asiatique', 'Indienne'].freeze
+  CUISINES = ['Française', 'Italienne', 'Espagnole', 'Sud-américaine', 'Asiatique', 'Indienne', 'Orientale'].freeze
   DURATIONS = ['Express (<15mn)', 'Rapide (15-30mn)', 'Classique (30-60mn)', 'Élaboré (>60mn)'].freeze
   DIFFICULTIES = ['Facile', 'Moyen', 'Gastronomique'].freeze
   EQUIPMENTS = ['Sans','Plaques de cuisson', 'Four', 'AirFryer', 'Thermomix'].freeze
@@ -78,8 +78,20 @@ class Recipe
     [ingredient1, ingredient2, ingredient3, ingredient4].compact_blank
   end
 
+  def ingredients_filtered
+    if cuisine == 'Orientale'
+      ingredients.reject { |i| i.downcase.include?('porc') }
+    else
+      ingredients
+    end
+  end
+
   def ingredients_text
-    ingredients.any? ? ingredients.join(', ') : 'Aucun ingrédient spécifié'
+    ingredients_filtered.any? ? ingredients_filtered.join(', ') : 'Aucun ingrédient spécifié'
+  end
+
+  def has_porc_with_orientale?
+    cuisine == 'Orientale' && ingredients.any? { |i| i.downcase.include?('porc') }
   end
 
   def excluded_ingredients

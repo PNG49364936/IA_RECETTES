@@ -443,6 +443,52 @@ function initFormBehaviors() {
 
   // Vérifier l'état initial pour "Enfant"
   handleDietChange();
+
+  // === Gestion Cuisine Orientale + Porc ===
+  const cuisineRadios = document.querySelectorAll('input[name="recipe[cuisine]"]');
+  const ingredientInputs = document.querySelectorAll('input[name^="recipe[ingredient"]');
+
+  function checkPorcWithOrientale(field) {
+    const selectedCuisine = document.querySelector('input[name="recipe[cuisine]"]:checked');
+    if (selectedCuisine && selectedCuisine.value === 'Orientale') {
+      if (field && field.value.toLowerCase().includes('porc')) {
+        afficherNotification(
+          'Ingrédient non autorisé',
+          'Pas de viande de porc pour ce menu. Cet ingrédient sera ignoré.',
+          'attention'
+        );
+        field.value = '';
+      }
+    }
+  }
+
+  function checkAllIngredientsForPorc() {
+    const selectedCuisine = document.querySelector('input[name="recipe[cuisine]"]:checked');
+    if (selectedCuisine && selectedCuisine.value === 'Orientale') {
+      ingredientInputs.forEach(function(field) {
+        if (field.value.toLowerCase().includes('porc')) {
+          afficherNotification(
+            'Ingrédient non autorisé',
+            'Pas de viande de porc pour ce menu. Cet ingrédient sera ignoré.',
+            'attention'
+          );
+          field.value = '';
+        }
+      });
+    }
+  }
+
+  // Vérifier quand on change de cuisine vers Orientale
+  cuisineRadios.forEach(function(radio) {
+    radio.addEventListener('change', checkAllIngredientsForPorc);
+  });
+
+  // Vérifier quand on saisit dans un champ ingrédient (à chaque frappe)
+  ingredientInputs.forEach(function(field) {
+    field.addEventListener('input', function() {
+      checkPorcWithOrientale(this);
+    });
+  });
 }
 
 // Écouter les deux événements pour compatibilité avec Turbo
