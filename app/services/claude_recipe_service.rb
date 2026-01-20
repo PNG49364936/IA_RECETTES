@@ -60,6 +60,8 @@ class ClaudeRecipeService
 
       #{contrainte_orientale}
 
+      #{contrainte_asiatique}
+
       Réponds en français avec ce format exact (utilise le format Markdown):
 
       ## [Nom de la recette]
@@ -177,6 +179,15 @@ class ClaudeRecipeService
       - Aliments faciles à mâcher et à digérer
 
       IMPORTANT: La recette doit rester appétissante et gourmande pour plaire aux enfants.
+    CONTRAINTE
+  end
+
+  def contrainte_asiatique
+    return "" unless @recipe.cuisine == 'Asiatique'
+
+    <<~CONTRAINTE
+      **CONTRAINTE - CUISINE ASIATIQUE:**
+      Exclure les recettes indiennes. Se concentrer sur les cuisines d'Asie de l'Est et du Sud-Est (Chine, Japon, Thaïlande, Vietnam, Corée, etc.).
     CONTRAINTE
   end
 
