@@ -62,6 +62,8 @@ class ClaudeRecipeService
 
       #{contrainte_asiatique}
 
+      #{contrainte_equipements}
+
       Réponds en français avec ce format exact (utilise le format Markdown):
 
       ## [Nom de la recette]
@@ -209,6 +211,35 @@ class ClaudeRecipeService
       - IMPORTANT: Si la recette contient de la viande, tu DOIS écrire "viande halal" dans la liste des ingrédients (ex: "Poulet halal", "Bœuf haché halal", "Agneau halal")
       - Privilégier les épices orientales (cumin, coriandre, cannelle, ras el hanout, curcuma)
       - Proposer des saveurs authentiques de la cuisine orientale (Maghreb, Moyen-Orient)
+    CONTRAINTE
+  end
+
+  def contrainte_equipements
+    contraintes = []
+
+    if @recipe.equipments&.include?('Four')
+      contraintes << <<~FOUR
+        - **FOUR:** Tu DOIS préciser si un préchauffage est nécessaire (et à quelle température), la température de cuisson exacte en degrés Celsius, et la durée de cuisson précise.
+      FOUR
+    end
+
+    if @recipe.equipments&.include?('AirFryer')
+      contraintes << <<~AIRFRYER
+        - **AIRFRYER:** Tu DOIS préciser la température exacte en degrés Celsius et la durée de cuisson précise.
+      AIRFRYER
+    end
+
+    if @recipe.equipments&.include?('Thermomix')
+      contraintes << <<~THERMOMIX
+        - **THERMOMIX:** Tu DOIS préciser la vitesse (1 à 10 ou turbo), la température exacte, et le temps de cuisson pour chaque étape utilisant le Thermomix.
+      THERMOMIX
+    end
+
+    return "" if contraintes.empty?
+
+    <<~CONTRAINTE
+      **INSTRUCTIONS SPÉCIFIQUES POUR LES ÉQUIPEMENTS:**
+      #{contraintes.join}
     CONTRAINTE
   end
 end
