@@ -1,0 +1,46 @@
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="card shadow-lg border-0">
+      <div class="card-header text-center text-white" style="background-color: #1F509A;">
+        <h4 class="mb-0">Créer mon compte</h4>
+      </div>
+      <div class="card-body p-4">
+        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+          <% if resource.errors.any? %>
+            <div class="alert alert-danger">
+              <% resource.errors.full_messages.each do |message| %>
+                <div><%= message %></div>
+              <% end %>
+            </div>
+          <% end %>
+
+          <div class="mb-3">
+            <%= f.label :email, "Adresse e-mail", class: "form-label" %>
+            <%= f.email_field :email, class: "form-control", placeholder: "exemple@email.com", autofocus: true, autocomplete: "email" %>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :password, "Mot de passe", class: "form-label" %>
+            <%= f.password_field :password, class: "form-control", placeholder: "Minimum 6 caractères", autocomplete: "new-password" %>
+            <div class="form-text">Minimum 6 caractères</div>
+          </div>
+
+          <div class="mb-3">
+            <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "form-label" %>
+            <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Répétez votre mot de passe", autocomplete: "new-password" %>
+          </div>
+
+          <div class="d-grid">
+            <%= f.submit "Créer mon compte", class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
+          </div>
+        <% end %>
+
+        <hr class="my-4">
+
+        <div class="text-center">
+          <%= link_to "Déjà un compte ? Se connecter", new_user_session_path, class: "text-muted" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

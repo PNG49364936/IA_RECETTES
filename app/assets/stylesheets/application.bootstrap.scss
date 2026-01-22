@@ -84,6 +84,22 @@ $body-color: $text-custom;
   }
 }
 
+// Nouveau header application (3cm = ~113px)
+.app-header {
+  background-color: #1F509A;
+  height: 60px; // Hauteur approximative pour header compact
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-account {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 // Footer
 .footer-custom {
   background-color: darken($background-custom, 3%);

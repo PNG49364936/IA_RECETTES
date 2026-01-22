@@ -1,37 +1,31 @@
 class RecipesController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_recipe, only: [:show, :download_pdf, :destroy]
+
   def new
     @recipe = Recipe.new
   end
 
   def create
-    @recipe = Recipe.new(recipe_params)
+    @recipe = current_user.recipes.build(recipe_params)
 
     if @recipe.valid?
       service = ClaudeRecipeService.new(@recipe)
-      @recipe.response = service.generate
+      @recipe.content = service.generate
 
-      if @recipe.response.present?
-        # Stocker dans le cache Rails (pas de limite de taille)
+      if @recipe.content.present?
+        # Extraire le titre de la recette depuis le contenu Markdown
+        @recipe.title = @recipe.extract_title_from_content
+
+        # Stocker en cache temporairement (pas en BDD)
         @cache_key = "recipe_#{SecureRandom.hex(8)}"
-        data_to_cache = {
-          response: @recipe.response,
-          params: recipe_params.to_h
-        }
+        Rails.cache.write(@cache_key, {
+          recipe_attributes: @recipe.attributes.except('id', 'created_at', 'updated_at'),
+          user_id: current_user.id
+        }, expires_in: 1.hour)
 
-        Rails.logger.info "========================================"
-        Rails.logger.info "=== CREATE: Sauvegarde cache ==="
-        Rails.logger.info "Cache key: #{@cache_key}"
-        Rails.logger.info "Cache store: #{Rails.cache.class}"
-
-        write_result = Rails.cache.write(@cache_key, data_to_cache, expires_in: 1.hour)
-        Rails.logger.info "Write result: #{write_result}"
-
-        # Vérification immédiate
-        verify = Rails.cache.read(@cache_key)
-        Rails.logger.info "Verification read: #{verify.present? ? 'OK' : 'FAILED'}"
-        Rails.logger.info "========================================"
-
-        @markdown_content = render_markdown(@recipe.response)
+        @markdown_content = render_markdown(@recipe.content)
+        @is_new_recipe = true
         render :show
       else
         flash.now[:alert] = "Une erreur s'est produite lors de la génération de la recette. Veuillez réessayer."
@@ -42,49 +36,52 @@ class RecipesController < ApplicationController
     end
   end
 
-  def show
-    cache_key = session[:recipe_cache_key]
-    cached_data = cache_key.present? ? Rails.cache.read(cache_key) : nil
+  def save
+    cache_key = params[:cache_key]
+    cached_data = Rails.cache.read(cache_key)
 
-    if cached_data.present?
-      @recipe = Recipe.new(cached_data[:params])
-      @recipe.response = cached_data[:response]
-      @markdown_content = render_markdown(@recipe.response)
+    if cached_data && cached_data[:user_id] == current_user.id
+      @recipe = current_user.recipes.build(cached_data[:recipe_attributes])
+
+      if @recipe.save
+        Rails.cache.delete(cache_key)
+        redirect_to @recipe, notice: "Recette sauvegardée avec succès !"
+      else
+        redirect_to dashboard_path, alert: "Erreur lors de la sauvegarde."
+      end
     else
-      redirect_to new_recipe_path, alert: "Aucune recette à afficher. Veuillez remplir le formulaire."
+      redirect_to dashboard_path, alert: "Recette expirée ou introuvable."
     end
+  end
+
+  def show
+    @markdown_content = render_markdown(@recipe.content)
+    @is_new_recipe = false
+  end
+
+  def destroy
+    @recipe.destroy
+    redirect_to dashboard_path, notice: "La recette a été supprimée."
   end
 
   def download_pdf
-    cache_key = params[:key]
+    @markdown_content = render_markdown(@recipe.content)
 
-    Rails.logger.info "========================================"
-    Rails.logger.info "=== PDF: Lecture cache ==="
-    Rails.logger.info "Cache key from params: #{cache_key.inspect}"
-    Rails.logger.info "Cache store: #{Rails.cache.class}"
-    Rails.logger.info "All params: #{params.to_unsafe_h}"
-
-    cached_data = cache_key.present? ? Rails.cache.read(cache_key) : nil
-    Rails.logger.info "Cached data present?: #{cached_data.present?}"
-    Rails.logger.info "========================================"
-
-    if cached_data.present?
-      @recipe = Recipe.new(cached_data[:params])
-      @recipe.response = cached_data[:response]
-      @markdown_content = render_markdown(@recipe.response)
-
-      render pdf: "recette",
-             template: "recipes/download_pdf",
-             layout: "pdf",
-             encoding: "UTF-8",
-             page_size: "A4",
-             margin: { top: 20, bottom: 20, left: 20, right: 20 }
-    else
-      redirect_to new_recipe_path, alert: "Aucune recette à télécharger."
-    end
+    render pdf: "recette",
+           template: "recipes/download_pdf",
+           layout: "pdf",
+           encoding: "UTF-8",
+           page_size: "A4",
+           margin: { top: 20, bottom: 20, left: 20, right: 20 }
   end
 
   private
+
+  def set_recipe
+    @recipe = current_user.recipes.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    redirect_to dashboard_path, alert: "Recette introuvable."
+  end
 
   def recipe_params
     params.require(:recipe).permit(

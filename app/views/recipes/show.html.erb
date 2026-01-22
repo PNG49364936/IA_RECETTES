@@ -2,7 +2,9 @@
   <div class="col-12 col-lg-10 col-xl-8">
     <div class="card shadow-sm recipe-card">
       <div class="card-header bg-primary-custom">
-        <h2 class="card-title mb-0 text-white text-center">Votre recette</h2>
+        <h2 class="card-title mb-0 text-white text-center">
+          Votre recette (<%= @recipe.choice %>)
+        </h2>
       </div>
       <div class="card-body p-4">
         <div class="recipe-content">
@@ -18,11 +20,26 @@
             Imprimer
           </button>
 
-          <!-- Bouton Télécharger : texte adapté selon l'écran -->
-          <%= link_to download_pdf_recipes_path(key: @cache_key), class: "btn btn-outline-secondary", data: { turbo: false } do %>
-            <span class="d-none d-lg-inline">Télécharger PDF</span>
-            <span class="d-lg-none">Télécharger</span>
+          <% if @is_new_recipe %>
+            <!-- Recette non sauvegardée : bouton Sauvegarder -->
+            <%= button_to "Sauvegarder la recette", save_recipes_path(cache_key: @cache_key),
+                method: :post,
+                class: "btn btn-success" %>
+          <% else %>
+            <!-- Recette sauvegardée : boutons PDF et Supprimer -->
+            <%= link_to download_pdf_recipe_path(@recipe), class: "btn btn-outline-secondary", data: { turbo: false } do %>
+              <span class="d-none d-lg-inline">Télécharger PDF</span>
+              <span class="d-lg-none">Télécharger</span>
+            <% end %>
+
+            <%= button_to "Supprimer la recette", recipe_path(@recipe), method: :delete,
+                class: "btn btn-outline-danger",
+                data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer cette recette ?" } %>
           <% end %>
+        </div>
+
+        <div class="text-center mt-3">
+          <%= link_to "← Retour au tableau de bord", dashboard_path, class: "text-muted" %>
         </div>
       </div>
     </div>

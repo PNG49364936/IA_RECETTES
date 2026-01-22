@@ -1,0 +1,134 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10">
+    <h1 class="mb-4" style="color: #1F509A;">Tableau de bord</h1>
+
+    <div class="row g-4 mb-5">
+      <!-- Créer une recette -->
+      <div class="col-12 col-md-6">
+        <div class="card h-100 shadow-sm border-0 dashboard-card">
+          <div class="card-body text-center p-4">
+            <div class="fs-1 mb-3">🍽️</div>
+            <h5 class="card-title">Créer une recette</h5>
+            <p class="card-text text-muted">Générez une nouvelle recette personnalisée avec l'IA</p>
+            <%= link_to "Créer", new_recipe_path, class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Consulter mes recettes -->
+      <div class="col-12 col-md-6">
+        <div class="card h-100 shadow-sm border-0 dashboard-card">
+          <div class="card-body text-center p-4">
+            <div class="fs-1 mb-3">📚</div>
+            <h5 class="card-title">Consulter mes recettes</h5>
+            <p class="card-text text-muted">Retrouvez toutes vos recettes sauvegardées</p>
+            <button type="button" class="btn btn-outline-primary" style="border-color: #1F509A; color: #1F509A;" data-bs-toggle="collapse" data-bs-target="#recipeCategories">
+              Voir par catégorie
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Catégories de recettes (dépliable) -->
+    <div class="collapse" id="recipeCategories">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Mes recettes par catégorie</h5>
+
+          <!-- Entrées -->
+          <div class="category-section mb-4">
+            <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#entreesList">
+              <span class="category-icon me-2">🥗</span>
+              <span class="fw-bold" style="color: #1F509A;">Entrées</span>
+              <span class="badge bg-secondary ms-2"><%= current_user.recipes.where(choice: 'Entrée').count %></span>
+              <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
+            <div class="collapse mt-2" id="entreesList">
+              <% entrees = current_user.recipes.where(choice: 'Entrée').order(created_at: :desc) %>
+              <% if entrees.any? %>
+                <div class="list-group">
+                  <% entrees.each do |recipe| %>
+                    <%= link_to recipe_path(recipe), class: "list-group-item list-group-item-action d-flex justify-content-between align-items-center" do %>
+                      <span><%= recipe.extract_title_from_content %></span>
+                      <i class="bi bi-chevron-right"></i>
+                    <% end %>
+                  <% end %>
+                </div>
+              <% else %>
+                <p class="text-muted small ms-4">Aucune entrée sauvegardée</p>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Plats principaux -->
+          <div class="category-section mb-4">
+            <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#platsList">
+              <span class="category-icon me-2">🍝</span>
+              <span class="fw-bold" style="color: #1F509A;">Plats principaux</span>
+              <span class="badge bg-secondary ms-2"><%= current_user.recipes.where(choice: 'Plat principal').count %></span>
+              <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
+            <div class="collapse mt-2" id="platsList">
+              <% plats = current_user.recipes.where(choice: 'Plat principal').order(created_at: :desc) %>
+              <% if plats.any? %>
+                <div class="list-group">
+                  <% plats.each do |recipe| %>
+                    <%= link_to recipe_path(recipe), class: "list-group-item list-group-item-action d-flex justify-content-between align-items-center" do %>
+                      <span><%= recipe.extract_title_from_content %></span>
+                      <i class="bi bi-chevron-right"></i>
+                    <% end %>
+                  <% end %>
+                </div>
+              <% else %>
+                <p class="text-muted small ms-4">Aucun plat principal sauvegardé</p>
+              <% end %>
+            </div>
+          </div>
+
+          <!-- Desserts -->
+          <div class="category-section">
+            <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
+                    type="button" data-bs-toggle="collapse" data-bs-target="#dessertsList">
+              <span class="category-icon me-2">🍰</span>
+              <span class="fw-bold" style="color: #1F509A;">Desserts</span>
+              <span class="badge bg-secondary ms-2"><%= current_user.recipes.where(choice: 'Dessert').count %></span>
+              <i class="bi bi-chevron-down ms-auto"></i>
+            </button>
+            <div class="collapse mt-2" id="dessertsList">
+              <% desserts = current_user.recipes.where(choice: 'Dessert').order(created_at: :desc) %>
+              <% if desserts.any? %>
+                <div class="list-group">
+                  <% desserts.each do |recipe| %>
+                    <%= link_to recipe_path(recipe), class: "list-group-item list-group-item-action d-flex justify-content-between align-items-center" do %>
+                      <span><%= recipe.extract_title_from_content %></span>
+                      <i class="bi bi-chevron-right"></i>
+                    <% end %>
+                  <% end %>
+                </div>
+              <% else %>
+                <p class="text-muted small ms-4">Aucun dessert sauvegardé</p>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .dashboard-card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.2s ease;
+  }
+  .category-icon {
+    font-size: 1.5rem;
+  }
+  .category-section .btn-link:hover {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+  }
+</style>

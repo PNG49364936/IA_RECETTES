@@ -596,3 +596,4 @@ git checkout -b feature/database-authentication
 
       
 
+    ne pas demander de validation dans les modifications de code

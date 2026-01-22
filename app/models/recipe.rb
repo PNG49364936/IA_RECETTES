@@ -1,6 +1,5 @@
-class Recipe
-  include ActiveModel::Model
-  include ActiveModel::Attributes
+class Recipe < ApplicationRecord
+  belongs_to :user
 
   CHOICES = ['Entrée', 'Plat principal', 'Dessert'].freeze
   GUESTS_OPTIONS = (1..6).to_a.freeze
@@ -11,25 +10,7 @@ class Recipe
   DIFFICULTIES = ['Facile', 'Moyen', 'Gastronomique'].freeze
   EQUIPMENTS = ['Sans','Plaques de cuisson', 'Four', 'AirFryer', 'Thermomix'].freeze
 
-  attribute :choice, :string
-  attribute :guests, :integer
-  attribute :diet, :string
-  attribute :age_range, :string
-  attribute :cuisine, :string
-  attribute :duration, :string
-  attribute :difficulty, :string
-  attribute :ingredient1, :string
-  attribute :ingredient2, :string
-  attribute :ingredient3, :string
-  attribute :ingredient4, :string
-  attribute :excluded1, :string
-  attribute :excluded2, :string
-  attribute :excluded3, :string
-  attribute :excluded4, :string
-  attribute :response, :string
-
-  # Equipments est un tableau
-  attr_accessor :equipments
+  serialize :equipments, coder: JSON
 
   validate :validate_all_fields
   validate :at_least_one_equipment
@@ -67,11 +48,15 @@ class Recipe
     end
   end
 
-  def initialize(attributes = {})
-    super
-    @equipments ||= []
-    # Nettoyer les valeurs vides du tableau
-    @equipments = @equipments.reject(&:blank?) if @equipments.is_a?(Array)
+  def equipments
+    value = super
+    return [] if value.blank?
+    value.is_a?(Array) ? value : []
+  end
+
+  def equipments=(value)
+    cleaned = value.is_a?(Array) ? value.reject(&:blank?) : []
+    super(cleaned)
   end
 
   def ingredients
@@ -104,6 +89,33 @@ class Recipe
 
   def equipments_text
     equipments.any? ? equipments.join(', ') : 'Aucun équipement spécifié'
+  end
+
+  # Extraire le titre de la recette depuis le contenu Markdown
+  def extract_title_from_content
+    return "Recette sans titre" if content.blank?
+
+    # Méthode 1: Chercher ## Titre
+    lines = content.split("\n")
+    lines.each do |line|
+      if line.strip.start_with?("## ")
+        return line.strip.sub(/^##\s*/, '').strip
+      end
+    end
+
+    # Méthode 2: Prendre le texte avant "**Temps" ou "Temps de préparation"
+    if content.include?("**Temps")
+      titre = content.split("**Temps").first.strip
+      return titre if titre.present? && titre.length < 100
+    end
+
+    # Méthode 3: Première ligne non vide (limitée à 80 caractères)
+    first_line = lines.find { |l| l.strip.present? }&.strip
+    if first_line
+      return first_line.length > 80 ? "#{first_line[0..77]}..." : first_line
+    end
+
+    "Recette sans titre"
   end
 
   private

@@ -1,11 +1,20 @@
 Rails.application.routes.draw do
-  # Page d'accueil = formulaire de recette
-  root 'recipes#new'
+  # Devise pour l'authentification
+  devise_for :users
+
+  # Page d'accueil publique
+  root 'pages#home'
+
+  # Dashboard utilisateur (après connexion)
+  get 'dashboard', to: 'pages#dashboard'
 
   # Routes pour les recettes
-  resources :recipes, only: [:new, :create, :show] do
-    collection do
+  resources :recipes, only: [:new, :create, :show, :destroy] do
+    member do
       get :download_pdf
+    end
+    collection do
+      post :save
     end
   end
 

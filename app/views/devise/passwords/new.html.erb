@@ -1,0 +1,39 @@
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+  <div class="col-12 col-md-6 col-lg-4">
+    <div class="card shadow-lg border-0">
+      <div class="card-header text-center text-white" style="background-color: #1F509A;">
+        <h4 class="mb-0">Mot de passe oublié</h4>
+      </div>
+      <div class="card-body p-4">
+        <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+          <p class="text-muted mb-4">
+            Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+          </p>
+
+          <% if resource.errors.any? %>
+            <div class="alert alert-danger">
+              <% resource.errors.full_messages.each do |message| %>
+                <div><%= message %></div>
+              <% end %>
+            </div>
+          <% end %>
+
+          <div class="mb-3">
+            <%= f.label :email, "Adresse e-mail", class: "form-label" %>
+            <%= f.email_field :email, class: "form-control", placeholder: "exemple@email.com", autofocus: true, autocomplete: "email" %>
+          </div>
+
+          <div class="d-grid">
+            <%= f.submit "Envoyer les instructions", class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
+          </div>
+        <% end %>
+
+        <hr class="my-4">
+
+        <div class="text-center">
+          <%= link_to "Retour à la connexion", root_path, class: "text-muted" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

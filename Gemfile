@@ -73,3 +73,9 @@ gem "rack-attack"
 # Rendu Markdown pour les recettes
 gem "redcarpet"
 
+# Base de données PostgreSQL
+gem "pg"
+
+# Authentification utilisateur
+gem "devise"
+
