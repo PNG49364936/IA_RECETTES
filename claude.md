@@ -175,7 +175,7 @@ config/
 
 ## Déploiement
 
-- **Cible** : Render.com ou Fly.io
+- **Cible** : Render.com 
 - **Distribution** : URL partagée (4-5 personnes)
 - **Budget estimé** : ~10€/mois API Claude
 
@@ -183,3 +183,416 @@ config/
 - [ ] Configurer `ANTHROPIC_API_KEY` dans les variables d'environnement
 - [ ] Configurer le cache (Redis ou MemCachier)
 - [ ] Vérifier que wkhtmltopdf est installé sur le serveur
+
+## Instructions pour modification app :
+# Plan de transition : Archivage des recettes en base de données
+
+## 📋 Résumé de la situation actuelle
+
+Votre application **Recettes IA** fonctionne actuellement :
+- **Sans base de données** (`rails new --skip-active-record`)
+- **Sans authentification** (usage familial)
+- **Stockage temporaire** via le cache Rails (FileStore)
+- **PDF généré à la volée** depuis le cache
+
+### Pourquoi le PDF pose problème ?
+Le PDF est généré depuis une recette stockée temporairement en cache. Si le cache expire ou si le serveur redémarre, la recette est perdue. Les utilisateurs ne peuvent pas retrouver leurs anciennes recettes.
+
+---
+
+## 🎯 Objectif de la transition
+
+Permettre aux utilisateurs de :
+1. **Créer un compte** (inscription/connexion)
+2. **Sauvegarder leurs recettes** de façon permanente
+
+3. **Télécharger les PDF** à tout moment
+
+---
+
+## 🏗️ Vue d'ensemble des changements
+
+```
+AVANT (actuel)                    APRÈS (cible)
+─────────────────                 ─────────────────
+Pas de BDD                   →    PostgreSQL
+Pas d'authentification       →    Devise (gem)
+Cache temporaire             →    Table "recipes"
+1 seule recette accessible   →    Historique complet
+```
+
+---
+
+## 📚 Étape 1 : Comprendre les concepts clés
+
+### 1.1 Base de données relationnelle
+
+Une base de données stocke vos données de façon permanente dans des **tables** (comme des tableaux Excel).
+
+```
+Table "users"                    Table "recipes"
+┌────┬─────────┬──────────┐     ┌────┬─────────┬────────────┬─────────┐
+│ id │ email   │ password │     │ id │ user_id │ title      │ content │
+├────┼─────────┼──────────┤     ├────┼─────────┼────────────┼─────────┤
+│ 1  │ a@b.com │ ******** │     │ 1  │ 1       │ Paella     │ ...     │
+│ 2  │ c@d.com │ ******** │     │ 2  │ 1       │ Tiramisu   │ ...     │
+└────┴─────────┴──────────┘     │ 3  │ 2       │ Ratatouille│ ...     │
+                                 └────┴─────────┴────────────┴─────────┘
+```
+
+**Relation** : Chaque recette appartient à un utilisateur via `user_id`.
+
+### 1.2 Authentification avec Devise
+
+**Devise** est LA gem standard pour l'authentification Rails. Elle gère :
+- Inscription / Connexion / Déconnexion
+- Mot de passe oublié
+- Sessions sécurisées
+- Protection des pages
+
+### 1.3 PostgreSQL vs SQLite
+
+| Critère | SQLite | PostgreSQL |
+|---------|--------|------------|
+| Installation | Aucune (fichier local) | Serveur à configurer |
+| Production | ❌ Non recommandé | ✅ Standard |
+| Render.com | ❌ Non supporté | ✅ Inclus gratuitement |
+| Coût | Gratuit | Gratuit (tier basique) |
+
+**Recommandation** : PostgreSQL directement, pour éviter une seconde migration.
+
+---
+
+## 📚 Étape 2 : Choix d'hébergement de la base de données
+
+### Option A : Render.com (recommandé pour vous)
+
+Puisque vous ciblez déjà Render.com, c'est le plus simple.
+
+| Service | Coût | Limites |
+|---------|------|---------|
+| PostgreSQL Free | 0€ | 1 Go, expire après 90 jours d'inactivité |
+| PostgreSQL Starter | ~7$/mois | 1 Go, persistant |
+
+**Avantages** : Tout au même endroit, configuration simplifiée.
+
+### Option B : Services externes
+
+| Service | Tier gratuit | Remarques |
+|---------|--------------|-----------|
+| 
+| Neon | 512 Mo gratuit | Serverless, très rapide |
+
+
+### Option C : Auto-hébergement
+
+
+
+
+
+---
+
+## 📚 Étape 3 : Plan de migration technique
+
+### Phase 1 : Ajouter Active Record (1-2h)
+
+```ruby
+# 1. Modifier Gemfile - Ajouter :
+gem 'pg'  # PostgreSQL
+
+# 2. Créer config/database.yml
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+
+development:
+  <<: *default
+  database: recettes_ia_development
+
+production:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+```
+
+```bash
+# 3. Créer la base locale
+rails db:create
+```
+
+### Phase 2 : Ajouter l'authentification Devise (2-3h)
+
+```ruby
+# 1. Gemfile
+gem 'devise'
+
+# 2. Installation
+rails generate devise:install
+rails generate devise User
+rails db:migrate
+
+# 3. Protéger les contrôleurs
+class RecipesController < ApplicationController
+  before_action :authenticate_user!
+end
+```
+
+### Phase 3 : Créer le modèle Recipe avec persistance (2-3h)
+
+```ruby
+# 1. Générer la migration
+rails generate model Recipe \
+  user:references \
+  title:string \
+  dish_type:string \
+  servings:integer \
+  diet:string \
+  cuisine:string \
+  difficulty:string \
+  time_range:string \
+  equipment:text \
+  desired_ingredients:text \
+  forbidden_ingredients:text \
+  content:text
+
+# 2. Migrer
+rails db:migrate
+
+# 3. Modèle Recipe (remplace l'actuel)
+class Recipe < ApplicationRecord
+  belongs_to :user
+  
+  # Conserver vos validations actuelles
+  validates :dish_type, presence: true
+  # ... etc
+  
+  # Sérialisation pour les arrays
+  serialize :equipment, Array
+  serialize :desired_ingredients, Array
+  serialize :forbidden_ingredients, Array
+end
+
+# 4. Modèle User
+class User < ApplicationRecord
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
+  
+  has_many :recipes, dependent: :destroy
+end
+```
+
+### Phase 4 : Adapter le contrôleur (1-2h)
+
+```ruby
+class RecipesController < ApplicationController
+  before_action :authenticate_user!
+  
+  def index
+    @recipes = current_user.recipes.order(created_at: :desc)
+  end
+  
+  def create
+    @recipe = current_user.recipes.build(recipe_params)
+    
+    if @recipe.valid?
+      # Appel API Claude
+      service = ClaudeRecipeService.new(@recipe)
+      @recipe.content = service.generate
+      @recipe.title = extract_title(@recipe.content)
+      @recipe.save!
+      
+      redirect_to @recipe
+    else
+      render :new
+    end
+  end
+  
+  def show
+    @recipe = current_user.recipes.find(params[:id])
+  end
+  
+  def download_pdf
+    @recipe = current_user.recipes.find(params[:id])
+    # ... génération PDF
+  end
+  
+  private
+  
+  def recipe_params
+    params.require(:recipe).permit(
+      :dish_type, :servings, :diet, :cuisine,
+      :difficulty, :time_range,
+      equipment: [], desired_ingredients: [], forbidden_ingredients: []
+    )
+  end
+end
+```
+
+### Phase 5 : Ajouter la page d'historique (1-2h)
+
+```erb
+<!-- app/views/recipes/index.html.erb -->
+<h1>Mes recettes</h1>
+
+<% if @recipes.any? %>
+  <div class="list-group">
+    <% @recipes.each do |recipe| %>
+      <a href="<%= recipe_path(recipe) %>" class="list-group-item">
+        <h5><%= recipe.title %></h5>
+        <small>
+          <%= recipe.cuisine %> • <%= recipe.difficulty %> 
+          • <%= l(recipe.created_at, format: :long) %>
+        </small>
+      </a>
+    <% end %>
+  </div>
+<% else %>
+  <p>Aucune recette sauvegardée.</p>
+  <%= link_to "Générer ma première recette", new_recipe_path %>
+<% end %>
+```
+
+---
+
+## 📚 Étape 4 : Nouvelles routes
+
+```ruby
+# config/routes.rb
+Rails.application.routes.draw do
+  devise_for :users
+  
+  resources :recipes, only: [:index, :new, :create, :show] do
+    member do
+      get :download_pdf
+    end
+  end
+  
+  root 'recipes#index'  # Changement : index au lieu de new
+end
+```
+
+**Nouveau flux utilisateur** :
+```
+Accueil (/) 
+    │
+    ├── Non connecté → Page de connexion
+    │
+    └── Connecté → Liste des recettes (index)
+                        │
+                        ├── "Nouvelle recette" → Formulaire (new)
+                        │                              │
+                        │                              └── Génération → Détail (show)
+                        │
+                        └── Clic sur une recette → Détail (show)
+                                                        │
+                                                        └── Télécharger PDF
+```
+
+---
+
+## 📚 Étape 5 : Déploiement sur Render.com
+
+### 5.1 Créer la base de données
+
+1. Dashboard Render → **New** → **PostgreSQL**
+2. Nom : `recettes-ia-db`
+3. Plan : Free ou Starter
+4. Région : Frankfurt (plus proche)
+5. **Create Database**
+
+### 5.2 Connecter l'application
+
+1. Copier l'**Internal Database URL**
+2. Dans votre Web Service → **Environment**
+3. Ajouter : `DATABASE_URL` = (l'URL copiée)
+
+### 5.3 Commandes de build
+
+```yaml
+# render.yaml ou dans l'interface
+buildCommand: bundle install && yarn install && bundle exec rails db:migrate && bundle exec rails assets:precompile
+startCommand: bundle exec puma -C config/puma.rb
+```
+
+---
+
+
+---
+
+## ✅ Checklist avant de commencer
+
+### Prérequis techniques
+- [ ] PostgreSQL installé localement (`brew install postgresql` sur Mac)
+- [ ] Compte Render.com créé
+- [ ] Git configuré avec commits réguliers
+
+### Décisions à prendre
+- [ ] Budget mensuel accepté (~24€/mois recommandé)
+- [ ] Voulez-vous une page d'inscription publique ou gérer les comptes manuellement ?
+- [ ] Voulez-vous un email de confirmation à l'inscription ?
+
+### Sauvegardes
+- [ ] Commit Git avant toute modification
+- [ ] Copie du fichier `claude.md` actuel
+
+---
+
+## 🚀 Par où commencer ?
+
+**Je recommande cette approche progressive** :
+
+1. **D'abord en local** : Faites toutes les modifications sur votre machine
+2. **Testez abondamment** : Créez plusieurs comptes, plusieurs recettes
+3. **Puis déployez** : Une fois que tout fonctionne localement
+
+**Première action concrète** :
+```bash
+# Créer une branche de travail
+git checkout -b feature/database-authentication
+
+# Installer PostgreSQL si nécessaire
+# Mac : brew install postgresql && brew services start postgresql
+# Ubuntu : sudo apt install postgresql
+```
+
+### A prendre en compte
+- utilisation de neon.
+- il faudra creer une page d'accueil :
+   - avec header
+   - main.
+
+   Header : 
+   - 3 cms de haut
+   - color font : blanc
+   - back ground color : 1F509A
+   - sur la droite : "mon compte"
+     en cliquant sur mon compte :
+        un formulaire avec :
+        - adress-mail à renseigner
+        - mot de passe
+        - Me connecter
+        - mot de passe oublié
+        - créer mon compte.
+        (tous les back-end de ces rubriques à créer)
+
+    si l'utilisateur se commecte.
+    - nouvel écran.
+    - prevoir header 3 cms (sera adapté plus tard graphiquement)
+
+    - l'utilisateur :
+    - pourra valider sur cette page :
+         - creer recette (link vers views/recipe/new)
+         - Consulter mes recettes.
+           en validant, affichage de entree, plat principal,dessert.
+           (présentation verticale)
+         - lorsque l utilisateur cliquera sur "entrée", les recettes sauvegardée s'afficheront, idem pour plats principales, etc.
+
+    lors de l'affichage de la recette, prevoir bouton "Supprimer la recette"
+    (sur PC et mobil)
+
+    ### TRES IMPORTANT.
+    Les recettes doivent être identifiées comme : Entrée, plat principal, dessert.
+    Lorsqu'un recette est crée et affichée, cett mentions (entree, plat princiapl, dessert) doit être aussi visible entre (). Show.erb (ligne 5)
+
+      
+
