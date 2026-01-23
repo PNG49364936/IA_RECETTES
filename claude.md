@@ -83,6 +83,7 @@ Table "recipes"
 app/
 ├── controllers/
 │   ├── application_controller.rb  # Configuration Devise
+│   ├── admin_controller.rb        # Administration (index, users, recipes, show_recipe)
 │   ├── pages_controller.rb        # home, dashboard
 │   └── recipes_controller.rb      # new, create, save, show, destroy, download_pdf
 ├── models/
@@ -101,10 +102,15 @@ app/
 │   │   ├── new.html.erb           # Formulaire création recette
 │   │   ├── show.html.erb          # Affichage recette
 │   │   └── download_pdf.html.erb  # Template PDF
-│   └── devise/                    # Vues authentification personnalisées
-│       ├── sessions/
-│       ├── registrations/
-│       └── passwords/
+│   ├── devise/                    # Vues authentification personnalisées
+│   │   ├── sessions/
+│   │   ├── registrations/
+│   │   └── passwords/
+│   └── admin/                     # Vues administration
+│       ├── index.html.erb         # Dashboard admin
+│       ├── users.html.erb         # Liste utilisateurs
+│       ├── recipes.html.erb       # Liste recettes
+│       └── show_recipe.html.erb   # Affichage recette
 └── assets/
     └── stylesheets/
         └── application.bootstrap.scss
@@ -177,6 +183,7 @@ Page d'accueil (/)
 - **Cuisine Orientale** : Pas de porc (halal)
 - **Régime Enfant** : Aliments adaptés à l'âge
 - **Titre unique** : Une recette avec le même titre ne peut pas être sauvegardée deux fois (alerte "Recette déjà sauvegardée")
+- **Quota de 15 recettes** : Chaque utilisateur peut sauvegarder maximum 15 recettes (alerte "Quota de sauvegarde atteint, annuler une recette")
 
 ## Design
 
@@ -221,6 +228,14 @@ $header-color: #1F509A;      // Bleu header
 - "Créer une recette" : lien vers le formulaire
 - "Consulter mes recettes" : liste par catégorie (Entrées, Plats, Desserts)
 - Affichage du titre uniquement dans la liste
+- Compteur de recettes sauvegardées (X/15)
+
+### Administration (réservé à l'admin)
+- **Admin** : pngauthier@hotmail.fr
+- Accès via "Administration du site" dans le dashboard (visible uniquement pour l'admin)
+- **Utilisateurs** : liste des emails et nombre de recettes (mots de passe cryptés)
+- **Recettes** : liste de toutes les recettes de tous les utilisateurs par catégorie
+- Clic sur un titre affiche la recette complète avec l'auteur
 
 ## Sécurité
 
@@ -244,6 +259,14 @@ DATABASE_URL=postgresql://user:password@host/database?sslmode=require
 devise_for :users
 root 'pages#home'
 get 'dashboard', to: 'pages#dashboard'
+
+# Administration
+get 'admin', to: 'admin#index'
+get 'admin/users', to: 'admin#users'
+get 'admin/recipes', to: 'admin#recipes'
+get 'admin/recipe/:id', to: 'admin#show_recipe'
+
+# Recettes
 resources :recipes, only: [:new, :create, :show, :destroy] do
   member do
     get :download_pdf
