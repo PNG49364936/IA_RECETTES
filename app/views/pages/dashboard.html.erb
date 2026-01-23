@@ -48,7 +48,7 @@
     <div class="collapse" id="recipeCategories">
       <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
-          <h5 class="card-title mb-4">Mes recettes par catégorie</h5>
+          <h5 class="card-title mb-4">Mes recettes par catégorie <small class="text-muted">(15 recettes maximum sauvegardées - <%= current_user.recipes.count %>/15)</small></h5>
 
           <!-- Entrées -->
           <div class="category-section mb-4">

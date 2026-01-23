@@ -36,11 +36,19 @@ class RecipesController < ApplicationController
     end
   end
 
+  MAX_RECIPES_PER_USER = 15
+
   def save
     cache_key = params[:cache_key]
     cached_data = Rails.cache.read(cache_key)
 
     if cached_data && cached_data[:user_id] == current_user.id
+      # Vérifier le quota de 15 recettes
+      if current_user.recipes.count >= MAX_RECIPES_PER_USER
+        redirect_to dashboard_path, alert: "Quota de sauvegarde atteint, annuler une recette"
+        return
+      end
+
       @recipe = current_user.recipes.build(cached_data[:recipe_attributes])
 
       # Vérifier si une recette avec le même titre existe déjà
