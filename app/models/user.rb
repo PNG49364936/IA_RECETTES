@@ -3,4 +3,10 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :recipes, dependent: :destroy
+
+  ADMIN_EMAIL = 'pngauthier@hotmail.fr'.freeze
+
+  def admin?
+    email == ADMIN_EMAIL
+  end
 end

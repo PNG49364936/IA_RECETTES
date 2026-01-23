@@ -12,6 +12,8 @@ class Recipe < ApplicationRecord
 
   serialize :equipments, coder: JSON
 
+  validates :title, uniqueness: { scope: :user_id, message: "Recette déjà sauvegardée" }, allow_blank: true
+
   validate :validate_all_fields
   validate :at_least_one_equipment
   validate :gastronomique_not_express

@@ -43,6 +43,15 @@ class RecipesController < ApplicationController
     if cached_data && cached_data[:user_id] == current_user.id
       @recipe = current_user.recipes.build(cached_data[:recipe_attributes])
 
+      # Vérifier si une recette avec le même titre existe déjà
+      titre = @recipe.extract_title_from_content
+      if current_user.recipes.exists?(title: titre)
+        redirect_to dashboard_path, alert: "Recette déjà sauvegardée"
+        return
+      end
+
+      @recipe.title = titre
+
       if @recipe.save
         Rails.cache.delete(cache_key)
         redirect_to @recipe, notice: "Recette sauvegardée avec succès !"

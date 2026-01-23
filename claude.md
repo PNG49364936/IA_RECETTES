@@ -176,6 +176,7 @@ Page d'accueil (/)
 - **Recettes Rapides** : Maximum 5 ingrédients (hors sel, poivre, huile)
 - **Cuisine Orientale** : Pas de porc (halal)
 - **Régime Enfant** : Aliments adaptés à l'âge
+- **Titre unique** : Une recette avec le même titre ne peut pas être sauvegardée deux fois (alerte "Recette déjà sauvegardée")
 
 ## Design
 

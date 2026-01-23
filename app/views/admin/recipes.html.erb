@@ -1,0 +1,110 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10">
+    <h1 class="mb-4" style="color: #1F509A;">Toutes les recettes</h1>
+
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-body">
+        <!-- Entrées -->
+        <div class="category-section mb-4">
+          <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
+                  type="button" data-bs-toggle="collapse" data-bs-target="#adminEntreesList">
+            <span class="category-icon me-2">🥗</span>
+            <span class="fw-bold" style="color: #1F509A;">Entrées</span>
+            <span class="badge bg-secondary ms-2"><%= @entrees.count %></span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+          </button>
+          <div class="collapse mt-2" id="adminEntreesList">
+            <% if @entrees.any? %>
+              <div class="list-group">
+                <% @entrees.each do |recipe| %>
+                  <%= link_to admin_show_recipe_path(recipe), class: "list-group-item list-group-item-action d-flex justify-content-between align-items-center" do %>
+                    <div>
+                      <span><%= recipe.extract_title_from_content %></span>
+                      <br>
+                      <small class="text-muted">par <%= recipe.user.email %></small>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                  <% end %>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="text-muted small ms-4">Aucune entrée</p>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Plats principaux -->
+        <div class="category-section mb-4">
+          <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
+                  type="button" data-bs-toggle="collapse" data-bs-target="#adminPlatsList">
+            <span class="category-icon me-2">🍝</span>
+            <span class="fw-bold" style="color: #1F509A;">Plats principaux</span>
+            <span class="badge bg-secondary ms-2"><%= @plats.count %></span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+          </button>
+          <div class="collapse mt-2" id="adminPlatsList">
+            <% if @plats.any? %>
+              <div class="list-group">
+                <% @plats.each do |recipe| %>
+                  <%= link_to admin_show_recipe_path(recipe), class: "list-group-item list-group-item-action d-flex justify-content-between align-items-center" do %>
+                    <div>
+                      <span><%= recipe.extract_title_from_content %></span>
+                      <br>
+                      <small class="text-muted">par <%= recipe.user.email %></small>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                  <% end %>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="text-muted small ms-4">Aucun plat principal</p>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Desserts -->
+        <div class="category-section">
+          <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
+                  type="button" data-bs-toggle="collapse" data-bs-target="#adminDessertsList">
+            <span class="category-icon me-2">🍰</span>
+            <span class="fw-bold" style="color: #1F509A;">Desserts</span>
+            <span class="badge bg-secondary ms-2"><%= @desserts.count %></span>
+            <i class="bi bi-chevron-down ms-auto"></i>
+          </button>
+          <div class="collapse mt-2" id="adminDessertsList">
+            <% if @desserts.any? %>
+              <div class="list-group">
+                <% @desserts.each do |recipe| %>
+                  <%= link_to admin_show_recipe_path(recipe), class: "list-group-item list-group-item-action d-flex justify-content-between align-items-center" do %>
+                    <div>
+                      <span><%= recipe.extract_title_from_content %></span>
+                      <br>
+                      <small class="text-muted">par <%= recipe.user.email %></small>
+                    </div>
+                    <i class="bi bi-chevron-right"></i>
+                  <% end %>
+                <% end %>
+              </div>
+            <% else %>
+              <p class="text-muted small ms-4">Aucun dessert</p>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <%= link_to "← Retour à l'administration", admin_path, class: "text-muted" %>
+    </div>
+  </div>
+</div>
+
+<style>
+  .category-icon {
+    font-size: 1.5rem;
+  }
+  .category-section .btn-link:hover {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+  }
+</style>

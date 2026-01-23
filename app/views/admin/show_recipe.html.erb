@@ -1,0 +1,27 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10 col-xl-8">
+    <div class="card shadow-sm recipe-card">
+      <div class="card-header bg-primary-custom">
+        <h2 class="card-title mb-0 text-white text-center">
+          <%= @recipe.extract_title_from_content %> (<%= @recipe.choice %>)
+        </h2>
+      </div>
+      <div class="card-body p-4">
+        <div class="alert alert-info mb-3">
+          <strong>Auteur :</strong> <%= @recipe.user.email %>
+          <br>
+          <strong>Créée le :</strong> <%= @recipe.created_at.strftime("%d/%m/%Y à %H:%M") %>
+        </div>
+        <div class="recipe-content">
+          <%= @markdown_content %>
+        </div>
+      </div>
+      <div class="card-footer bg-white">
+        <div class="text-center">
+          <%= link_to "← Retour aux recettes", admin_recipes_path, class: "btn btn-outline-secondary" %>
+          <%= link_to "Administration", admin_path, class: "btn btn-outline-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

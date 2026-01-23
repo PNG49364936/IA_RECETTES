@@ -1,0 +1,57 @@
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10">
+    <h1 class="mb-4" style="color: #1F509A;">Administration du site</h1>
+
+    <div class="row g-4 mb-4">
+      <div class="col-12 col-md-4">
+        <div class="card shadow-sm border-0 text-center p-3">
+          <div class="fs-1 mb-2">👥</div>
+          <h3><%= @total_users %></h3>
+          <p class="text-muted mb-0">Utilisateurs</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card shadow-sm border-0 text-center p-3">
+          <div class="fs-1 mb-2">📖</div>
+          <h3><%= @total_recipes %></h3>
+          <p class="text-muted mb-0">Recettes</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card shadow-sm border-0 text-center p-3">
+          <div class="fs-1 mb-2">🔐</div>
+          <h3>Admin</h3>
+          <p class="text-muted mb-0"><%= current_user.email %></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12 col-md-6">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body text-center p-4">
+            <div class="fs-1 mb-3">👥</div>
+            <h5 class="card-title">Utilisateurs</h5>
+            <p class="card-text text-muted">Consulter les comptes utilisateurs</p>
+            <%= link_to "Voir les utilisateurs", admin_users_path, class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6">
+        <div class="card h-100 shadow-sm border-0">
+          <div class="card-body text-center p-4">
+            <div class="fs-1 mb-3">📖</div>
+            <h5 class="card-title">Recettes</h5>
+            <p class="card-text text-muted">Consulter toutes les recettes</p>
+            <%= link_to "Voir les recettes", admin_recipes_path, class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <%= link_to "← Retour au tableau de bord", dashboard_path, class: "text-muted" %>
+    </div>
+  </div>
+</div>

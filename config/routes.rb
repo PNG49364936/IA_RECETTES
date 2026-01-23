@@ -8,6 +8,12 @@ Rails.application.routes.draw do
   # Dashboard utilisateur (après connexion)
   get 'dashboard', to: 'pages#dashboard'
 
+  # Administration (réservé à l'admin)
+  get 'admin', to: 'admin#index'
+  get 'admin/users', to: 'admin#users'
+  get 'admin/recipes', to: 'admin#recipes'
+  get 'admin/recipe/:id', to: 'admin#show_recipe', as: 'admin_show_recipe'
+
   # Routes pour les recettes
   resources :recipes, only: [:new, :create, :show, :destroy] do
     member do
