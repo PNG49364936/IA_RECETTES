@@ -5,7 +5,7 @@ class Recipe < ApplicationRecord
   GUESTS_OPTIONS = (1..6).to_a.freeze
   DIETS = ['Sans restriction', 'Sans gluten', 'Diabétique', 'Végétarien', 'Healthy', 'Enfant'].freeze
   AGE_RANGES = ['2 à 5 ans', '6 à 8 ans', '8 à 10 ans'].freeze
-  CUISINES = ['Française', 'Italienne', 'Espagnole', 'Sud-américaine', 'Asiatique', 'Indienne', 'Orientale'].freeze
+  CUISINES = ['Sans préférence','Française', 'Italienne', 'Espagnole', 'Sud-américaine', 'Asiatique', 'Indienne', 'Orientale','Fusion(créative)'].freeze
   DURATIONS = ['Express (<15mn)', 'Rapide (15-30mn)', 'Classique (30-60mn)', 'Élaboré (>60mn)'].freeze
   DIFFICULTIES = ['Facile', 'Moyen', 'Gastronomique'].freeze
   EQUIPMENTS = ['Sans','Plaques de cuisson', 'Four', 'AirFryer', 'Thermomix'].freeze

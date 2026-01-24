@@ -168,7 +168,7 @@ Page d'accueil (/)
 | Nombre de convives | Select | 1-6 personnes |
 | Régime et restrictions | Radio buttons | Sans restriction, Sans gluten, Diabétique, Végétarien, Healthy, Enfant |
 | Tranche d'âge | Radio buttons | 2-5 ans, 6-8 ans, 8-10 ans (si Enfant) |
-| Type de cuisine | Radio buttons | Française, Italienne, Espagnole, Sud-américaine, Asiatique, Indienne, Orientale |
+| Type de cuisine | Radio buttons | Sans préférence, Française, Italienne, Espagnole, Sud-américaine, Asiatique, Indienne, Orientale, Fusion (créative) |
 | Niveau de difficulté | Radio buttons | Facile, Moyen, Gastronomique |
 | Temps total | Radio buttons | Express (<15mn), Rapide (15-30mn), Classique (30-60mn), Élaboré (>60mn) |
 | Équipement de cuisson | Checkboxes | Sans, Plaques de cuisson, Four, AirFryer, Thermomix |
@@ -181,6 +181,8 @@ Page d'accueil (/)
 - **Recettes Express** : Maximum 4 ingrédients (hors sel, poivre, huile)
 - **Recettes Rapides** : Maximum 5 ingrédients (hors sel, poivre, huile)
 - **Cuisine Orientale** : Pas de porc (halal)
+- **Cuisine Sans préférence** : Recettes neutres sans saveurs typiquement régionales (pas de curry, coriandre, épices exotiques)
+- **Cuisine Fusion (créative)** : Recettes originales mélangeant des influences culinaires de différentes cultures
 - **Régime Enfant** : Aliments adaptés à l'âge
 - **Titre unique** : Une recette avec le même titre ne peut pas être sauvegardée deux fois (alerte "Recette déjà sauvegardée")
 - **Quota de 15 recettes** : Chaque utilisateur peut sauvegarder maximum 15 recettes (alerte "Quota de sauvegarde atteint, annuler une recette")

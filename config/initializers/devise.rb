@@ -18,9 +18,15 @@ Devise.setup do |config|
 
   # Déconnexion automatique après 10 minutes d'inactivité
   config.timeout_in = 10.minutes
+
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
 
   # Navigation paths
   config.navigational_formats = ['*/*', :html, :turbo_stream]
+end
+
+# Configuration host pour les emails (en dehors du bloc Devise)
+Rails.application.config.after_initialize do
+  Rails.application.routes.default_url_options[:host] = Rails.env.production? ? ENV.fetch('APP_HOST', 'recettes-ai.onrender.com') : 'localhost:3000'
 end

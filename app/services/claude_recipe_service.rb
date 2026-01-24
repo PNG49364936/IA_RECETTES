@@ -62,6 +62,10 @@ class ClaudeRecipeService
 
       #{contrainte_asiatique}
 
+      #{contrainte_sans_preference}
+
+      #{contrainte_fusion}
+
       #{contrainte_equipements}
 
       Réponds en français avec ce format exact (utilise le format Markdown):
@@ -211,6 +215,51 @@ class ClaudeRecipeService
       - IMPORTANT: Si la recette contient de la viande, tu DOIS écrire "viande halal" dans la liste des ingrédients (ex: "Poulet halal", "Bœuf haché halal", "Agneau halal")
       - Privilégier les épices orientales (cumin, coriandre, cannelle, ras el hanout, curcuma)
       - Proposer des saveurs authentiques de la cuisine orientale (Maghreb, Moyen-Orient)
+    CONTRAINTE
+  end
+
+  def contrainte_sans_preference
+    return "" unless @recipe.cuisine == 'Sans préférence'
+
+    <<~CONTRAINTE
+      **CONTRAINTE - CUISINE SANS PRÉFÉRENCE (NEUTRE):**
+      La recette doit être une cuisine neutre, sans saveurs typiquement régionales ou exotiques.
+
+      ÉPICES ET INGRÉDIENTS À ÉVITER:
+      - Curry, curcuma, garam masala et épices indiennes
+      - Coriandre fraîche, citronnelle, nuoc-mâm, sauce soja
+      - Piments, harissa, ras el hanout
+      - Paprika fumé, chorizo, safran
+      - Gingembre, wasabi, miso
+
+      STYLE RECOMMANDÉ:
+      - Cuisine simple et familiale
+      - Assaisonnements classiques: sel, poivre, herbes de Provence, persil, ciboulette
+      - Saveurs douces et accessibles à tous les palais
+      - Recettes traditionnelles sans marqueur régional fort
+    CONTRAINTE
+  end
+
+  def contrainte_fusion
+    return "" unless @recipe.cuisine == 'Fusion(créative)'
+
+    <<~CONTRAINTE
+      **CONTRAINTE - CUISINE FUSION (CRÉATIVE):**
+      La recette doit être originale et créative, mélangeant des influences culinaires de différentes cultures.
+
+      OBJECTIFS:
+      - Créer des associations de saveurs inattendues mais harmonieuses
+      - Mélanger des techniques de cuisines différentes (ex: technique française + saveurs asiatiques)
+      - Oser des combinaisons originales (sucré-salé, textures contrastées)
+      - Revisiter des classiques avec une touche moderne et inventive
+
+      EXEMPLES D'ASSOCIATIONS:
+      - Influence asiatique + européenne (ex: risotto au miso)
+      - Influence mexicaine + méditerranéenne (ex: tacos au tzatziki)
+      - Influence française + japonaise (ex: foie gras au yuzu)
+      - Techniques modernes appliquées à des recettes traditionnelles
+
+      IMPORTANT: La recette doit rester équilibrée et délicieuse, pas juste originale pour être originale.
     CONTRAINTE
   end
 
