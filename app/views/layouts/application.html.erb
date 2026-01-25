@@ -20,7 +20,7 @@
         </a>
         <div class="header-account">
           <% if user_signed_in? %>
-            <%= link_to "Tableau de bord", dashboard_path, class: "text-white text-decoration-none me-3" %>
+            <%= link_to "Mon tableau de bord", dashboard_path, class: "text-white text-decoration-none me-3" %>
             <%= button_to "Déconnexion", destroy_user_session_path, method: :delete, class: "btn btn-outline-light btn-sm" %>
           <% else %>
             <a href="#" class="text-white text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal">
