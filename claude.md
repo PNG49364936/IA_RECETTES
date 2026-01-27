@@ -219,9 +219,20 @@ $header-color: #1F509A;      // Bleu header
 - Connexion / Déconnexion
 - Mot de passe oublié (reset par email)
 - Sessions persistantes ("Se souvenir de moi")
+- **Modal de connexion** :
+  - Onglets : "Se connecter" et "Créer mon compte"
+  - Style de l'onglet "Créer mon compte" : texte noir (color: #000)
 
 ### Page recette (show)
 - Affichage du type de plat entre parenthèses
+- **Format de recette générée** :
+  - Temps de préparation
+  - Temps de cuisson
+  - Difficulté
+  - Calories (kcal par personne)
+  - Ingrédients avec quantités précises
+  - Étapes de préparation détaillées
+  - Conseils du chef
 - **Nouvelle recette** : bouton "Sauvegarder la recette" (vert)
 - **Recette sauvegardée** : boutons "Télécharger PDF" + "Supprimer la recette"
 - **Imprimer** : `window.print()` (PC uniquement)

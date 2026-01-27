@@ -75,6 +75,7 @@ class ClaudeRecipeService
       **Temps de préparation:** [X minutes]
       **Temps de cuisson:** [X minutes]
       **Difficulté:** #{@recipe.difficulty}
+      **Calories:** [X kcal par personne]
 
       ### Ingrédients (pour #{@recipe.guests} personne#{'s' if @recipe.guests > 1})
 
