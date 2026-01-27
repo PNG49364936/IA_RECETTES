@@ -6,7 +6,7 @@
         <h2 class="card-title mb-0 text-white text-center">Créer ma recette</h2>
       </div>
       <div class="card-body p-4">
-        <%= form_with model: @recipe, url: recipes_path, method: :post, local: true do |f| %>
+        <%= form_with model: @recipe, url: recipes_path, method: :post, local: true, html: { id: 'recipeForm', onsubmit: 'showSpinner()' } do |f| %>
 
           <% if @recipe.errors.any? %>
             <div class="alert alert-danger border-0 shadow-sm">
@@ -173,7 +173,7 @@
 
           <!-- Bouton de soumission -->
           <div class="d-grid gap-2 mt-4">
-            <%= f.submit "Générer ma recette", class: "btn btn-primary-custom btn-lg", data: { turbo: false, disable_with: "Génération en cours..." } %>
+            <%= f.submit "Générer ma recette", class: "btn btn-primary-custom btn-lg", data: { turbo: false }, onclick: "setTimeout(showSpinner, 100);" %>
           </div>
 
         <% end %>
@@ -212,18 +212,12 @@
 </div>
 
 <!-- Overlay de chargement -->
-<div id="loadingOverlay" class="loading-overlay d-none">
-  <div class="loading-content">
-    <div class="loading-spinner">
-      <div class="spinner-circle"></div>
-      <i class="bi bi-egg-fried loading-icon"></i>
-    </div>
-    <h4 class="loading-title mt-4">Création de votre recette</h4>
-    <p id="loadingMessage" class="loading-message">Analyse de vos préférences...</p>
-    <div class="loading-progress">
-      <div class="loading-progress-bar"></div>
-    </div>
+<div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+  <div class="spinner-border" role="status" style="width: 4rem; height: 4rem; color: #1F509A; border-width: 0.4rem;">
+    <span class="visually-hidden">Chargement...</span>
   </div>
+  <h4 class="mt-4" style="color: #1F509A; font-weight: 700;">Création de votre recette</h4>
+  <p id="loadingMessage" style="color: #4A3728; font-size: 1rem;">Analyse de vos préférences...</p>
 </div>
 
 <!-- Toast pour les notifications -->
@@ -240,47 +234,42 @@
 </div>
 
 <script>
-function initFormBehaviors() {
-  // === Gestion de l'overlay de chargement ===
-  const form = document.querySelector('form');
-  const loadingOverlay = document.getElementById('loadingOverlay');
-  const loadingMessage = document.getElementById('loadingMessage');
+// === Spinner de chargement ===
+var spinnerMessages = [
+  "Analyse de vos préférences...",
+  "Sélection des meilleurs ingrédients...",
+  "Notre chef prépare votre recette...",
+  "Rédaction des étapes de préparation...",
+  "Calcul des quantités...",
+  "Ajout des conseils du chef...",
+  "Finalisation de votre recette..."
+];
+var spinnerMessageIndex = 0;
+var spinnerInterval;
 
-  const messages = [
-    "Analyse de vos préférences...",
-    "Sélection des meilleurs ingrédients...",
-    "Notre chef prépare votre recette...",
-    "Rédaction des étapes de préparation...",
-    "Calcul des quantités...",
-    "Ajout des conseils du chef...",
-    "Finalisation de votre recette..."
-  ];
+function showSpinner() {
+  var overlay = document.getElementById('loadingOverlay');
+  var message = document.getElementById('loadingMessage');
 
-  let messageIndex = 0;
-  let messageInterval;
+  if (overlay) {
+    overlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    spinnerMessageIndex = 0;
+    message.textContent = spinnerMessages[0];
 
-  function rotateMessages() {
-    messageIndex = (messageIndex + 1) % messages.length;
-    loadingMessage.style.opacity = '0';
-    setTimeout(() => {
-      loadingMessage.textContent = messages[messageIndex];
-      loadingMessage.style.opacity = '1';
-    }, 300);
+    spinnerInterval = setInterval(function() {
+      spinnerMessageIndex = (spinnerMessageIndex + 1) % spinnerMessages.length;
+      message.style.opacity = '0';
+      setTimeout(function() {
+        message.textContent = spinnerMessages[spinnerMessageIndex];
+        message.style.opacity = '1';
+      }, 300);
+    }, 1500);
   }
+}
 
-  form.addEventListener('submit', function(e) {
-    // Vérifier si le formulaire est valide (côté client)
-    const submitBtn = form.querySelector('input[type="submit"]');
-
-    // Afficher l'overlay après un court délai pour permettre la validation HTML5
-    setTimeout(() => {
-      loadingOverlay.classList.remove('d-none');
-      document.body.style.overflow = 'hidden';
-      messageIndex = 0;
-      loadingMessage.textContent = messages[0];
-      messageInterval = setInterval(rotateMessages, 1500);
-    }, 100);
-  });
+function initFormBehaviors() {
+  var form = document.getElementById('recipeForm');
 
   // === Fonction pour afficher une notification toast ===
   function afficherNotification(titre, message, type) {
