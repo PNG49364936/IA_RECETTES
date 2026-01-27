@@ -21,6 +21,9 @@
         <div class="header-account">
           <% if user_signed_in? %>
             <%= link_to "Mon tableau de bord", dashboard_path, class: "text-white text-decoration-none me-3" %>
+            <a href="#" class="text-white text-decoration-none me-3" data-bs-toggle="modal" data-bs-target="#accountModal">
+              Mon compte
+            </a>
             <%= button_to "Déconnexion", destroy_user_session_path, method: :delete, class: "btn btn-outline-light btn-sm" %>
           <% else %>
             <a href="#" class="text-white text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal">
@@ -96,7 +99,18 @@
                     <%= f.label :remember_me, "Se souvenir de moi", class: "form-check-label" %>
                   </div>
                   <div class="d-grid">
-                    <%= f.submit "Me connecter", class: "btn btn-primary", style: " border-color: #1F509A;" %>
+                    <%= f.submit "Me connecter", class: "btn btn-primary", id: "login-submit-btn", style: " border-color: #1F509A;" %>
+                  </div>
+
+                  <!-- Spinner de chargement -->
+                  <div id="login-spinner" class="text-center mt-3" style="display: none;">
+                    <div class="spinner-border text-primary mb-2" role="status" style="width: 2.5rem; height: 2.5rem; color: #1F509A !important;">
+                      <span class="visually-hidden">Connexion en cours...</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                      <div id="login-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; background-color: #1F509A;"></div>
+                    </div>
+                    <p class="text-muted small mt-2">Connexion en cours...</p>
                   </div>
                 <% end %>
                 <div class="text-center mt-3">
@@ -121,7 +135,18 @@
                     <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Répétez votre mot de passe", required: true %>
                   </div>
                   <div class="d-grid">
-                    <%= f.submit "Créer mon compte", class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
+                    <%= f.submit "Créer mon compte", class: "btn btn-primary", id: "register-submit-btn", style: "background-color: #1F509A; border-color: #1F509A; color: #fff;" %>
+                  </div>
+
+                  <!-- Spinner de chargement -->
+                  <div id="register-spinner" class="text-center mt-3" style="display: none;">
+                    <div class="spinner-border text-primary mb-2" role="status" style="width: 2.5rem; height: 2.5rem; color: #1F509A !important;">
+                      <span class="visually-hidden">Création du compte en cours...</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                      <div id="register-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; background-color: #1F509A;"></div>
+                    </div>
+                    <p class="text-muted small mt-2">Création du compte en cours...</p>
                   </div>
                 <% end %>
               </div>
@@ -131,5 +156,162 @@
       </div>
     </div>
     <% end %>
+
+    <!-- Modal Mon compte (utilisateur connecté) -->
+    <% if user_signed_in? %>
+    <div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: #1F509A;">
+            <h5 class="modal-title text-white" id="accountModalLabel">Mon compte</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Onglets -->
+            <ul class="nav nav-tabs mb-3" id="accountTabs" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info-pane" type="button" role="tab">
+                  Mes informations
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete-pane" type="button" role="tab" style="color: #D4574E;">
+                  Supprimer mon compte
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="accountTabsContent">
+              <!-- Informations du compte -->
+              <div class="tab-pane fade show active" id="info-pane" role="tabpanel">
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Adresse e-mail</label>
+                  <p class="form-control-plaintext"><%= current_user.email %></p>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Membre depuis</label>
+                  <p class="form-control-plaintext"><%= l(current_user.created_at, format: :long) rescue current_user.created_at.strftime("%d/%m/%Y") %></p>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-bold">Recettes sauvegardées</label>
+                  <p class="form-control-plaintext"><%= current_user.recipes.count %>/15</p>
+                </div>
+              </div>
+
+              <!-- Suppression du compte -->
+              <div class="tab-pane fade" id="delete-pane" role="tabpanel">
+                <div class="alert alert-danger">
+                  <h6 class="alert-heading fw-bold">Attention !</h6>
+                  <p class="mb-0">La suppression de votre compte est <strong>définitive</strong> et entraînera :</p>
+                  <ul class="mt-2 mb-0">
+                    <li>La suppression de toutes vos recettes sauvegardées</li>
+                    <li>La perte de vos données personnelles</li>
+                  </ul>
+                </div>
+                <%= button_to "Supprimer définitivement mon compte",
+                    user_registration_path,
+                    method: :delete,
+                    id: "delete-account-btn",
+                    class: "btn btn-danger w-100",
+                    data: { turbo_confirm: "Voulez-vous vraiment supprimer votre compte et toutes vos recettes ?" } %>
+
+                <!-- Spinner de suppression -->
+                <div id="delete-spinner" class="text-center mt-3" style="display: none;">
+                  <div class="spinner-border text-danger mb-2" role="status" style="width: 2.5rem; height: 2.5rem;">
+                    <span class="visually-hidden">Suppression en cours...</span>
+                  </div>
+                  <div class="progress" style="height: 8px;">
+                    <div id="delete-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: 0%;"></div>
+                  </div>
+                  <p class="text-muted small mt-2">Suppression en cours...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% end %>
+
+    <script>
+      // Gestion du spinner de connexion
+      document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('login-form');
+        const loginSpinner = document.getElementById('login-spinner');
+        const loginBtn = document.getElementById('login-submit-btn');
+        const loginProgressBar = document.getElementById('login-progress-bar');
+
+        if (loginForm && loginSpinner && loginBtn) {
+          loginForm.addEventListener('submit', function(e) {
+            // Afficher le spinner et masquer le bouton
+            loginBtn.style.display = 'none';
+            loginSpinner.style.display = 'block';
+
+            // Animation de la barre de progression
+            let progress = 0;
+            const interval = setInterval(function() {
+              progress += Math.random() * 15;
+              if (progress > 90) progress = 90;
+              loginProgressBar.style.width = progress + '%';
+            }, 200);
+
+            // Nettoyer l'intervalle après 10 secondes
+            setTimeout(function() {
+              clearInterval(interval);
+            }, 10000);
+          });
+        }
+
+        // Même chose pour le formulaire d'inscription
+        const registerForm = document.getElementById('register-form');
+        const registerSpinner = document.getElementById('register-spinner');
+        const registerBtn = document.getElementById('register-submit-btn');
+        const registerProgressBar = document.getElementById('register-progress-bar');
+
+        if (registerForm && registerSpinner && registerBtn) {
+          registerForm.addEventListener('submit', function(e) {
+            registerBtn.style.display = 'none';
+            registerSpinner.style.display = 'block';
+
+            let progress = 0;
+            const interval = setInterval(function() {
+              progress += Math.random() * 15;
+              if (progress > 90) progress = 90;
+              registerProgressBar.style.width = progress + '%';
+            }, 200);
+
+            setTimeout(function() {
+              clearInterval(interval);
+            }, 10000);
+          });
+        }
+
+        // Gestion de la suppression du compte
+        const deleteBtn = document.getElementById('delete-account-btn');
+        const deleteSpinner = document.getElementById('delete-spinner');
+        const deleteProgressBar = document.getElementById('delete-progress-bar');
+
+        if (deleteBtn && deleteSpinner) {
+          const deleteForm = deleteBtn.closest('form');
+          if (deleteForm) {
+            deleteForm.addEventListener('submit', function() {
+              deleteBtn.style.display = 'none';
+              deleteSpinner.style.display = 'block';
+
+              let progress = 0;
+              const interval = setInterval(function() {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                deleteProgressBar.style.width = progress + '%';
+              }, 200);
+
+              setTimeout(function() {
+                clearInterval(interval);
+              }, 10000);
+            });
+          }
+        }
+      });
+    </script>
   </body>
 </html>

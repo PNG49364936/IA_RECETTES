@@ -23,6 +23,20 @@ class AdminController < ApplicationController
     @markdown_content = render_markdown(@recipe.content)
   end
 
+  def destroy_user
+    @user = User.find(params[:id])
+
+    if @user.admin?
+      redirect_to admin_users_path, alert: "Impossible de supprimer un administrateur"
+      return
+    end
+
+    @user.recipes.destroy_all
+    @user.destroy
+
+    redirect_to admin_users_path, notice: "Utilisateur et ses recettes supprimés avec succès"
+  end
+
   private
 
   def require_admin

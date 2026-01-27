@@ -12,6 +12,7 @@
                 <th>Mot de passe</th>
                 <th>Recettes</th>
                 <th>Inscrit le</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -26,6 +27,16 @@
                   <td><code>********</code> <small class="text-muted">(crypté)</small></td>
                   <td><%= user.recipes.count %></td>
                   <td><%= l(user.created_at, format: :short) rescue user.created_at.strftime("%d/%m/%Y") %></td>
+                  <td>
+                    <% unless user.admin? %>
+                      <%= button_to "Supprimer", admin_destroy_user_path(user),
+                          method: :delete,
+                          class: "btn btn-sm btn-outline-danger",
+                          data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer cet utilisateur et toutes ses recettes ?" } %>
+                    <% else %>
+                      <span class="text-muted">-</span>
+                    <% end %>
+                  </td>
                 </tr>
               <% end %>
             </tbody>

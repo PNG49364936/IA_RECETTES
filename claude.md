@@ -219,9 +219,18 @@ $header-color: #1F509A;      // Bleu header
 - Connexion / Déconnexion
 - Mot de passe oublié (reset par email)
 - Sessions persistantes ("Se souvenir de moi")
-- **Modal de connexion** :
+- **Modal de connexion** (utilisateur non connecté) :
   - Onglets : "Se connecter" et "Créer mon compte"
   - Style de l'onglet "Créer mon compte" : texte noir (color: #000)
+  - Spinner de chargement avec barre de progression lors de la soumission du formulaire (connexion et inscription)
+  - Animation de progression jusqu'à 90% pendant le traitement
+- **Modal Mon compte** (utilisateur connecté) :
+  - Onglet "Mes informations" : affiche email, date d'inscription, nombre de recettes
+  - Onglet "Supprimer mon compte" (texte rouge) :
+    - Avertissement sur les conséquences de la suppression
+    - Confirmation avant suppression définitive
+    - Suppression du compte et de toutes les recettes associées
+    - Spinner de chargement avec barre de progression rouge
 
 ### Page recette (show)
 - Affichage du type de plat entre parenthèses
@@ -247,6 +256,9 @@ $header-color: #1F509A;      // Bleu header
 - **Admin** : pngauthier@hotmail.fr
 - Accès via "Administration du site" dans le dashboard (visible uniquement pour l'admin)
 - **Utilisateurs** : liste des emails et nombre de recettes (mots de passe cryptés)
+  - Bouton "Supprimer" pour supprimer un utilisateur et toutes ses recettes
+  - Confirmation requise avant suppression
+  - Impossible de supprimer un administrateur
 - **Recettes** : liste de toutes les recettes de tous les utilisateurs par catégorie
 - Clic sur un titre affiche la recette complète avec l'auteur
 
@@ -278,6 +290,7 @@ get 'admin', to: 'admin#index'
 get 'admin/users', to: 'admin#users'
 get 'admin/recipes', to: 'admin#recipes'
 get 'admin/recipe/:id', to: 'admin#show_recipe'
+delete 'admin/user/:id', to: 'admin#destroy_user'
 
 # Recettes
 resources :recipes, only: [:new, :create, :show, :destroy] do

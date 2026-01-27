@@ -10,9 +10,10 @@ Rails.application.routes.draw do
 
   # Administration (réservé à l'admin)
   get 'admin', to: 'admin#index'
-  get 'admin/users', to: 'admin#users'
+  get 'admin/users', to: 'admin#users', as: 'admin_users'
   get 'admin/recipes', to: 'admin#recipes'
   get 'admin/recipe/:id', to: 'admin#show_recipe', as: 'admin_show_recipe'
+  delete 'admin/user/:id', to: 'admin#destroy_user', as: 'admin_destroy_user'
 
   # Routes pour les recettes
   resources :recipes, only: [:new, :create, :show, :destroy] do
