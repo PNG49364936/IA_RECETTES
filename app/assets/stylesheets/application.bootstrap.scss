@@ -87,7 +87,7 @@ $body-color: $text-custom;
 // Nouveau header application (3cm = ~113px)
 .app-header {
   background-color: #1F509A;
-  height: 60px; // Hauteur approximative pour header compact
+  height: 60px;
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -98,6 +98,35 @@ $body-color: $text-custom;
   display: flex;
   align-items: center;
   gap: 15px;
+}
+
+// Mobile et tablette : header sur deux lignes
+@media (max-width: 991px) {
+  .app-header {
+    height: auto;
+    padding: 10px 0;
+  }
+
+  .app-header .container {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .header-account {
+    flex-wrap: wrap;
+    justify-content: center;
+    font-size: 0.9rem;
+    gap: 12px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+  }
+
+  .header-account .btn {
+    font-size: 0.8rem;
+    padding: 4px 10px;
+  }
 }
 
 // Footer
