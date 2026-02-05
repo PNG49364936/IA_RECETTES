@@ -66,6 +66,8 @@ class ClaudeRecipeService
 
       #{contrainte_fusion}
 
+      #{contrainte_usa}
+
       #{contrainte_equipements}
 
       Réponds en français avec ce format exact (utilise le format Markdown):
@@ -261,6 +263,28 @@ class ClaudeRecipeService
       - Techniques modernes appliquées à des recettes traditionnelles
 
       IMPORTANT: La recette doit rester équilibrée et délicieuse, pas juste originale pour être originale.
+    CONTRAINTE
+  end
+
+  def contrainte_usa
+    return "" unless @recipe.cuisine == 'USA'
+
+    <<~CONTRAINTE
+      **CONTRAINTE - CUISINE USA (AMÉRICAINE):**
+      La recette doit être typiquement américaine (États-Unis).
+
+      STYLES INCLUS:
+      - Cuisine américaine classique (burgers, steaks, ribs, mac and cheese)
+      - Cuisine du Sud (fried chicken, cajun, BBQ)
+      - Diner américain (pancakes, cheesecake, brownies)
+      - Fast-food revisité en version maison
+
+      CUISINES STRICTEMENT EXCLUES:
+      - Cuisine mexicaine (tacos, burritos, enchiladas, guacamole, nachos)
+      - Cuisine sud-américaine (empanadas, ceviche, churrasco, arepas)
+      - Cuisine tex-mex
+
+      IMPORTANT: Même si certaines influences mexicaines sont présentes dans la culture culinaire américaine, cette recette doit rester 100% américaine traditionnelle.
     CONTRAINTE
   end
 
