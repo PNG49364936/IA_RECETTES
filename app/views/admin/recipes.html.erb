@@ -1,6 +1,6 @@
 <div class="row justify-content-center">
   <div class="col-12 col-lg-10">
-    <h1 class="mb-4" style="color: #1F509A;">Toutes les recettes</h1>
+    <h1 class="mb-4" style="color: #1F509A;"><%= t('admin.all_recipes') %></h1>
 
     <div class="card shadow-sm border-0 mb-4">
       <div class="card-body">
@@ -9,7 +9,7 @@
           <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
                   type="button" data-bs-toggle="collapse" data-bs-target="#adminEntreesList">
             <span class="category-icon me-2">🥗</span>
-            <span class="fw-bold" style="color: #1F509A;">Entrées</span>
+            <span class="fw-bold" style="color: #1F509A;"><%= t('admin.entrees') %></span>
             <span class="badge bg-secondary ms-2"><%= @entrees.count %></span>
             <i class="bi bi-chevron-down ms-auto"></i>
           </button>
@@ -21,14 +21,14 @@
                     <div>
                       <span><%= recipe.extract_title_from_content %></span>
                       <br>
-                      <small class="text-muted">par <%= recipe.user.email %></small>
+                      <small class="text-muted"><%= t('admin.by') %> <%= recipe.user.email %></small>
                     </div>
                     <i class="bi bi-chevron-right"></i>
                   <% end %>
                 <% end %>
               </div>
             <% else %>
-              <p class="text-muted small ms-4">Aucune entrée</p>
+              <p class="text-muted small ms-4"><%= t('admin.no_entree') %></p>
             <% end %>
           </div>
         </div>
@@ -38,7 +38,7 @@
           <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
                   type="button" data-bs-toggle="collapse" data-bs-target="#adminPlatsList">
             <span class="category-icon me-2">🍝</span>
-            <span class="fw-bold" style="color: #1F509A;">Plats principaux</span>
+            <span class="fw-bold" style="color: #1F509A;"><%= t('admin.plats') %></span>
             <span class="badge bg-secondary ms-2"><%= @plats.count %></span>
             <i class="bi bi-chevron-down ms-auto"></i>
           </button>
@@ -50,14 +50,14 @@
                     <div>
                       <span><%= recipe.extract_title_from_content %></span>
                       <br>
-                      <small class="text-muted">par <%= recipe.user.email %></small>
+                      <small class="text-muted"><%= t('admin.by') %> <%= recipe.user.email %></small>
                     </div>
                     <i class="bi bi-chevron-right"></i>
                   <% end %>
                 <% end %>
               </div>
             <% else %>
-              <p class="text-muted small ms-4">Aucun plat principal</p>
+              <p class="text-muted small ms-4"><%= t('admin.no_plat') %></p>
             <% end %>
           </div>
         </div>
@@ -67,7 +67,7 @@
           <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
                   type="button" data-bs-toggle="collapse" data-bs-target="#adminDessertsList">
             <span class="category-icon me-2">🍰</span>
-            <span class="fw-bold" style="color: #1F509A;">Desserts</span>
+            <span class="fw-bold" style="color: #1F509A;"><%= t('admin.desserts') %></span>
             <span class="badge bg-secondary ms-2"><%= @desserts.count %></span>
             <i class="bi bi-chevron-down ms-auto"></i>
           </button>
@@ -79,14 +79,14 @@
                     <div>
                       <span><%= recipe.extract_title_from_content %></span>
                       <br>
-                      <small class="text-muted">par <%= recipe.user.email %></small>
+                      <small class="text-muted"><%= t('admin.by') %> <%= recipe.user.email %></small>
                     </div>
                     <i class="bi bi-chevron-right"></i>
                   <% end %>
                 <% end %>
               </div>
             <% else %>
-              <p class="text-muted small ms-4">Aucun dessert</p>
+              <p class="text-muted small ms-4"><%= t('admin.no_dessert') %></p>
             <% end %>
           </div>
         </div>
@@ -94,7 +94,7 @@
     </div>
 
     <div class="text-center mt-4">
-      <%= link_to "← Retour à l'administration", admin_path, class: "text-muted" %>
+      <%= link_to t('admin.back_to_admin'), admin_path, class: "text-muted" %>
     </div>
   </div>
 </div>

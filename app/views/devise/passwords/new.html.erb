@@ -2,12 +2,12 @@
   <div class="col-12 col-md-6 col-lg-4">
     <div class="card shadow-lg border-0">
       <div class="card-header text-center text-white" style="background-color: #1F509A;">
-        <h4 class="mb-0">Mot de passe oublié</h4>
+        <h4 class="mb-0"><%= t('devise_views.forgot_title') %></h4>
       </div>
       <div class="card-body p-4">
         <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
           <p class="text-muted mb-4">
-            Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.
+            <%= t('devise_views.forgot_instructions') %>
           </p>
 
           <% if resource.errors.any? %>
@@ -19,19 +19,19 @@
           <% end %>
 
           <div class="mb-3">
-            <%= f.label :email, "Adresse e-mail", class: "form-label" %>
-            <%= f.email_field :email, class: "form-control", placeholder: "exemple@email.com", autofocus: true, autocomplete: "email" %>
+            <%= f.label :email, t('devise_views.email_label'), class: "form-label" %>
+            <%= f.email_field :email, class: "form-control", placeholder: t('devise_views.email_placeholder'), autofocus: true, autocomplete: "email" %>
           </div>
 
           <div class="d-grid">
-            <%= f.submit "Envoyer les instructions", class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
+            <%= f.submit t('devise_views.send_instructions'), class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
           </div>
         <% end %>
 
         <hr class="my-4">
 
         <div class="text-center">
-          <%= link_to "Retour à la connexion", root_path, class: "text-muted" %>
+          <%= link_to t('devise_views.back_to_login'), root_path, class: "text-muted" %>
         </div>
       </div>
     </div>

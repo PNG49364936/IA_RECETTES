@@ -27,21 +27,21 @@ class AdminController < ApplicationController
     @user = User.find(params[:id])
 
     if @user.admin?
-      redirect_to admin_users_path, alert: "Impossible de supprimer un administrateur"
+      redirect_to admin_users_path, alert: t('admin.cannot_delete_admin')
       return
     end
 
     @user.recipes.destroy_all
     @user.destroy
 
-    redirect_to admin_users_path, notice: "Utilisateur et ses recettes supprimés avec succès"
+    redirect_to admin_users_path, notice: t('admin.user_deleted')
   end
 
   private
 
   def require_admin
     unless current_user.admin?
-      redirect_to dashboard_path, alert: "Accès non autorisé"
+      redirect_to dashboard_path, alert: t('admin.unauthorized')
     end
   end
 

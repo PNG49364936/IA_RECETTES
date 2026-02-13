@@ -2,29 +2,28 @@
   <div class="col-12 col-md-8 col-lg-6 text-center">
     <div class="card shadow-lg border-0">
       <div class="card-body p-5">
-        <h1 class="display-5 fw-bold mb-4" style="color: #1F509A;">Recettes IA</h1>
+        <h1 class="display-5 fw-bold mb-4" style="color: #1F509A;"><%= t('home.title') %></h1>
         <p class="lead text-muted mb-4">
-          Générez des recettes personnalisées .
-          Choisissez vos ingrédients, votre type de cuisine et laissez notre chef créer la recette parfaite pour vous.
+          <%= t('home.subtitle') %>
         </p>
         <div class="d-grid gap-2 d-md-flex justify-content-center">
           <button type="button" class="btn btn-lg px-4" style="background-color: #1F509A; color: white;" data-bs-toggle="modal" data-bs-target="#loginModal">
-            Commencer
+            <%= t('home.start_btn') %>
           </button>
         </div>
         <hr class="my-4">
         <div class="row text-center">
           <div class="col-4">
             <div class="fs-1 mb-2">🍳</div>
-            <small class="text-muted">Cuisines</small>
+            <small class="text-muted"><%= t('home.cuisines') %></small>
           </div>
           <div class="col-4">
             <div class="fs-1 mb-2">📱</div>
-            <small class="text-muted">Export PDF</small>
+            <small class="text-muted"><%= t('home.export_pdf') %></small>
           </div>
           <div class="col-4">
             <div class="fs-1 mb-2">💾</div>
-            <small class="text-muted">Sauvegarde</small>
+            <small class="text-muted"><%= t('home.save') %></small>
           </div>
         </div>
       </div>

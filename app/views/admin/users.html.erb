@@ -1,6 +1,6 @@
 <div class="row justify-content-center">
   <div class="col-12 col-lg-10">
-    <h1 class="mb-4" style="color: #1F509A;">Utilisateurs (<%= @users.count %>)</h1>
+    <h1 class="mb-4" style="color: #1F509A;"><%= t('admin.users_title') %> (<%= @users.count %>)</h1>
 
     <div class="card shadow-sm border-0">
       <div class="card-body">
@@ -8,11 +8,11 @@
           <table class="table table-hover">
             <thead>
               <tr>
-                <th>Email</th>
-                <th>Mot de passe</th>
-                <th>Recettes</th>
-                <th>Inscrit le</th>
-                <th>Actions</th>
+                <th><%= t('admin.email') %></th>
+                <th><%= t('admin.password') %></th>
+                <th><%= t('admin.recipes') %></th>
+                <th><%= t('admin.joined') %></th>
+                <th><%= t('admin.actions') %></th>
               </tr>
             </thead>
             <tbody>
@@ -21,18 +21,18 @@
                   <td>
                     <%= user.email %>
                     <% if user.admin? %>
-                      <span class="badge bg-primary ms-2">Admin</span>
+                      <span class="badge bg-primary ms-2"><%= t('admin.admin_label') %></span>
                     <% end %>
                   </td>
-                  <td><code>********</code> <small class="text-muted">(crypté)</small></td>
+                  <td><code>********</code> <small class="text-muted">(<%= t('admin.encrypted') %>)</small></td>
                   <td><%= user.recipes.count %></td>
                   <td><%= l(user.created_at, format: :short) rescue user.created_at.strftime("%d/%m/%Y") %></td>
                   <td>
                     <% unless user.admin? %>
-                      <%= button_to "Supprimer", admin_destroy_user_path(user),
+                      <%= button_to t('admin.delete'), admin_destroy_user_path(user),
                           method: :delete,
                           class: "btn btn-sm btn-outline-danger",
-                          data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer cet utilisateur et toutes ses recettes ?" } %>
+                          data: { turbo_confirm: t('admin.delete_user_confirm') } %>
                     <% else %>
                       <span class="text-muted">-</span>
                     <% end %>
@@ -46,7 +46,7 @@
     </div>
 
     <div class="text-center mt-4">
-      <%= link_to "← Retour à l'administration", admin_path, class: "text-muted" %>
+      <%= link_to t('admin.back_to_admin'), admin_path, class: "text-muted" %>
     </div>
   </div>
 </div>

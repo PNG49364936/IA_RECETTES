@@ -10,7 +10,7 @@ class RecipesController < ApplicationController
     @recipe = current_user.recipes.build(recipe_params)
 
     if @recipe.valid?
-      service = ClaudeRecipeService.new(@recipe)
+      service = ClaudeRecipeService.new(@recipe, locale: I18n.locale)
       @recipe.content = service.generate
 
       if @recipe.content.present?
@@ -28,7 +28,7 @@ class RecipesController < ApplicationController
         @is_new_recipe = true
         render :show
       else
-        flash.now[:alert] = "Une erreur s'est produite lors de la génération de la recette. Veuillez réessayer."
+        flash.now[:alert] = t('recipes.flash.generation_error')
         render :new, status: :unprocessable_entity
       end
     else
@@ -45,7 +45,7 @@ class RecipesController < ApplicationController
     if cached_data && cached_data[:user_id] == current_user.id
       # Vérifier le quota de 15 recettes
       if current_user.recipes.count >= MAX_RECIPES_PER_USER
-        redirect_to dashboard_path, alert: "Quota de sauvegarde atteint, annuler une recette"
+        redirect_to dashboard_path, alert: t('recipes.flash.quota_reached')
         return
       end
 
@@ -54,7 +54,7 @@ class RecipesController < ApplicationController
       # Vérifier si une recette avec le même titre existe déjà
       titre = @recipe.extract_title_from_content
       if current_user.recipes.exists?(title: titre)
-        redirect_to dashboard_path, alert: "Recette déjà sauvegardée"
+        redirect_to dashboard_path, alert: t('recipes.flash.already_saved')
         return
       end
 
@@ -62,12 +62,12 @@ class RecipesController < ApplicationController
 
       if @recipe.save
         Rails.cache.delete(cache_key)
-        redirect_to @recipe, notice: "Recette sauvegardée avec succès !"
+        redirect_to @recipe, notice: t('recipes.flash.saved_success')
       else
-        redirect_to dashboard_path, alert: "Erreur lors de la sauvegarde."
+        redirect_to dashboard_path, alert: t('recipes.flash.save_error')
       end
     else
-      redirect_to dashboard_path, alert: "Recette expirée ou introuvable."
+      redirect_to dashboard_path, alert: t('recipes.flash.expired')
     end
   end
 
@@ -78,7 +78,7 @@ class RecipesController < ApplicationController
 
   def destroy
     @recipe.destroy
-    redirect_to dashboard_path, notice: "La recette a été supprimée."
+    redirect_to dashboard_path, notice: t('recipes.flash.deleted')
   end
 
   def download_pdf
@@ -97,7 +97,7 @@ class RecipesController < ApplicationController
   def set_recipe
     @recipe = current_user.recipes.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-    redirect_to dashboard_path, alert: "Recette introuvable."
+    redirect_to dashboard_path, alert: t('recipes.flash.not_found')
   end
 
   def recipe_params

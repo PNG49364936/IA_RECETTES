@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="<%= I18n.locale %>">
   <head>
-    <title>Recettes IA</title>
+    <title><%= t('layout.app_name') %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta charset="UTF-8">
     <%= csrf_meta_tags %>
@@ -16,18 +16,26 @@
     <header class="app-header">
       <div class="container d-flex justify-content-between align-items-center h-100">
         <a href="<%= root_path %>" class="text-decoration-none text-white fw-bold fs-5">
-          Recettes IA
+          <%= t('layout.app_name') %>
         </a>
-        <div class="header-account">
+        <div class="header-account d-flex align-items-center">
+          <!-- Sélecteur de langue -->
+          <div class="me-3">
+            <% if I18n.locale == :fr %>
+              <%= link_to "ES", set_locale_path(:es), class: "text-white text-decoration-none small fw-bold", style: "opacity: 0.7;" %>
+            <% else %>
+              <%= link_to "FR", set_locale_path(:fr), class: "text-white text-decoration-none small fw-bold", style: "opacity: 0.7;" %>
+            <% end %>
+          </div>
           <% if user_signed_in? %>
-            <%= link_to "Mon tableau de bord", dashboard_path, class: "text-white text-decoration-none me-3" %>
+            <%= link_to t('layout.my_dashboard'), dashboard_path, class: "text-white text-decoration-none me-3" %>
             <a href="#" class="text-white text-decoration-none me-3" data-bs-toggle="modal" data-bs-target="#accountModal">
-              Mon compte
+              <%= t('layout.my_account') %>
             </a>
-            <%= button_to "Déconnexion", destroy_user_session_path, method: :delete, class: "btn btn-outline-light btn-sm" %>
+            <%= button_to t('layout.logout'), destroy_user_session_path, method: :delete, class: "btn btn-outline-light btn-sm" %>
           <% else %>
             <a href="#" class="text-white text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal">
-              Mon compte
+              <%= t('layout.my_account') %>
             </a>
           <% end %>
         </div>
@@ -38,14 +46,14 @@
       <% if flash[:alert].present? %>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
           <%= flash[:alert] %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('layout.close') %>"></button>
         </div>
       <% end %>
 
       <% if flash[:notice].present? %>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
           <%= flash[:notice] %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="<%= t('layout.close') %>"></button>
         </div>
       <% end %>
 
@@ -54,7 +62,7 @@
 
     <footer class="footer-custom py-3 mt-auto">
       <div class="container text-center">
-        <small class="text-muted">Recettes IA - Version gratuite</small>
+        <small class="text-muted"><%= t('layout.footer') %></small>
       </div>
     </footer>
 
@@ -64,20 +72,20 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header" style="background-color: #1F509A;">
-            <h5 class="modal-title text-white" id="loginModalLabel">Mon compte</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            <h5 class="modal-title text-white" id="loginModalLabel"><%= t('layout.my_account') %></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="<%= t('layout.close') %>"></button>
           </div>
           <div class="modal-body">
             <!-- Onglets connexion / inscription -->
             <ul class="nav nav-tabs mb-3" id="authTabs" role="tablist">
               <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-pane" type="button" role="tab">
-                  Se connecter
+                  <%= t('layout.login_tab') %>
                 </button>
               </li>
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-pane" type="button" role="tab" style="color: #000;">
-                  Créer mon compte
+                  <%= t('layout.register_tab') %>
                 </button>
               </li>
             </ul>
@@ -87,34 +95,34 @@
               <div class="tab-pane fade show active" id="login-pane" role="tabpanel">
                 <%= form_for(User.new, as: :user, url: user_session_path, html: { id: "login-form" }) do |f| %>
                   <div class="mb-3">
-                    <%= f.label :email, "Adresse e-mail", class: "form-label" %>
-                    <%= f.email_field :email, class: "form-control", placeholder: "exemple@email.com", required: true, autofocus: true %>
+                    <%= f.label :email, t('layout.email_label'), class: "form-label" %>
+                    <%= f.email_field :email, class: "form-control", placeholder: t('layout.email_placeholder'), required: true, autofocus: true %>
                   </div>
                   <div class="mb-3">
-                    <%= f.label :password, "Mot de passe", class: "form-label" %>
-                    <%= f.password_field :password, class: "form-control", placeholder: "Votre mot de passe", required: true %>
+                    <%= f.label :password, t('layout.password_label'), class: "form-label" %>
+                    <%= f.password_field :password, class: "form-control", placeholder: t('layout.password_placeholder'), required: true %>
                   </div>
                   <div class="mb-3 form-check">
                     <%= f.check_box :remember_me, class: "form-check-input" %>
-                    <%= f.label :remember_me, "Se souvenir de moi", class: "form-check-label" %>
+                    <%= f.label :remember_me, t('layout.remember_me'), class: "form-check-label" %>
                   </div>
                   <div class="d-grid">
-                    <%= f.submit "Me connecter", class: "btn btn-primary", id: "login-submit-btn", style: " border-color: #1F509A;" %>
+                    <%= f.submit t('layout.login_submit'), class: "btn btn-primary", id: "login-submit-btn", style: " border-color: #1F509A;" %>
                   </div>
 
                   <!-- Spinner de chargement -->
                   <div id="login-spinner" class="text-center mt-3" style="display: none;">
                     <div class="spinner-border text-primary mb-2" role="status" style="width: 2.5rem; height: 2.5rem; color: #1F509A !important;">
-                      <span class="visually-hidden">Connexion en cours...</span>
+                      <span class="visually-hidden"><%= t('layout.login_loading') %></span>
                     </div>
                     <div class="progress" style="height: 8px;">
                       <div id="login-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; background-color: #1F509A;"></div>
                     </div>
-                    <p class="text-muted small mt-2">Connexion en cours...</p>
+                    <p class="text-muted small mt-2"><%= t('layout.login_loading') %></p>
                   </div>
                 <% end %>
                 <div class="text-center mt-3">
-                  <%= link_to "Mot de passe oublié ?", new_user_password_path, class: "text-muted small" %>
+                  <%= link_to t('layout.forgot_password'), new_user_password_path, class: "text-muted small" %>
                 </div>
               </div>
 
@@ -122,31 +130,31 @@
               <div class="tab-pane fade" id="register-pane" role="tabpanel">
                 <%= form_for(User.new, as: :user, url: user_registration_path, html: { id: "register-form" }) do |f| %>
                   <div class="mb-3">
-                    <%= f.label :email, "Adresse e-mail", class: "form-label" %>
-                    <%= f.email_field :email, class: "form-control", placeholder: "exemple@email.com", required: true %>
+                    <%= f.label :email, t('layout.email_label'), class: "form-label" %>
+                    <%= f.email_field :email, class: "form-control", placeholder: t('layout.email_placeholder'), required: true %>
                   </div>
                   <div class="mb-3">
-                    <%= f.label :password, "Mot de passe", class: "form-label" %>
-                    <%= f.password_field :password, class: "form-control", placeholder: "Minimum 6 caractères", required: true %>
-                    <div class="form-text">Minimum 6 caractères</div>
+                    <%= f.label :password, t('layout.password_label'), class: "form-label" %>
+                    <%= f.password_field :password, class: "form-control", placeholder: t('layout.password_placeholder_register'), required: true %>
+                    <div class="form-text"><%= t('layout.password_min_chars') %></div>
                   </div>
                   <div class="mb-3">
-                    <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "form-label" %>
-                    <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Répétez votre mot de passe", required: true %>
+                    <%= f.label :password_confirmation, t('layout.confirm_password'), class: "form-label" %>
+                    <%= f.password_field :password_confirmation, class: "form-control", placeholder: t('layout.confirm_password_placeholder'), required: true %>
                   </div>
                   <div class="d-grid">
-                    <%= f.submit "Créer mon compte", class: "btn btn-primary", id: "register-submit-btn", style: "background-color: #1F509A; border-color: #1F509A; color: #fff;" %>
+                    <%= f.submit t('layout.register_submit'), class: "btn btn-primary", id: "register-submit-btn", style: "background-color: #1F509A; border-color: #1F509A; color: #fff;" %>
                   </div>
 
                   <!-- Spinner de chargement -->
                   <div id="register-spinner" class="text-center mt-3" style="display: none;">
                     <div class="spinner-border text-primary mb-2" role="status" style="width: 2.5rem; height: 2.5rem; color: #1F509A !important;">
-                      <span class="visually-hidden">Création du compte en cours...</span>
+                      <span class="visually-hidden"><%= t('layout.register_loading') %></span>
                     </div>
                     <div class="progress" style="height: 8px;">
                       <div id="register-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; background-color: #1F509A;"></div>
                     </div>
-                    <p class="text-muted small mt-2">Création du compte en cours...</p>
+                    <p class="text-muted small mt-2"><%= t('layout.register_loading') %></p>
                   </div>
                 <% end %>
               </div>
@@ -163,20 +171,20 @@
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header" style="background-color: #1F509A;">
-            <h5 class="modal-title text-white" id="accountModalLabel">Mon compte</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            <h5 class="modal-title text-white" id="accountModalLabel"><%= t('layout.my_account') %></h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="<%= t('layout.close') %>"></button>
           </div>
           <div class="modal-body">
             <!-- Onglets -->
             <ul class="nav nav-tabs mb-3" id="accountTabs" role="tablist">
               <li class="nav-item" role="presentation">
                 <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info-pane" type="button" role="tab">
-                  Mes informations
+                  <%= t('layout.my_info_tab') %>
                 </button>
               </li>
               <li class="nav-item" role="presentation">
                 <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete-pane" type="button" role="tab" style="color: #D4574E;">
-                  Supprimer mon compte
+                  <%= t('layout.delete_account_tab') %>
                 </button>
               </li>
             </ul>
@@ -185,15 +193,15 @@
               <!-- Informations du compte -->
               <div class="tab-pane fade show active" id="info-pane" role="tabpanel">
                 <div class="mb-3">
-                  <label class="form-label fw-bold">Adresse e-mail</label>
+                  <label class="form-label fw-bold"><%= t('layout.email_label') %></label>
                   <p class="form-control-plaintext"><%= current_user.email %></p>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label fw-bold">Membre depuis</label>
+                  <label class="form-label fw-bold"><%= t('layout.member_since') %></label>
                   <p class="form-control-plaintext"><%= l(current_user.created_at, format: :long) rescue current_user.created_at.strftime("%d/%m/%Y") %></p>
                 </div>
                 <div class="mb-3">
-                  <label class="form-label fw-bold">Recettes sauvegardées</label>
+                  <label class="form-label fw-bold"><%= t('layout.saved_recipes') %></label>
                   <p class="form-control-plaintext"><%= current_user.recipes.count %>/15</p>
                 </div>
               </div>
@@ -201,29 +209,29 @@
               <!-- Suppression du compte -->
               <div class="tab-pane fade" id="delete-pane" role="tabpanel">
                 <div class="alert alert-danger">
-                  <h6 class="alert-heading fw-bold">Attention !</h6>
-                  <p class="mb-0">La suppression de votre compte est <strong>définitive</strong> et entraînera :</p>
+                  <h6 class="alert-heading fw-bold"><%= t('layout.delete_warning_title') %></h6>
+                  <p class="mb-0"><%= t('layout.delete_warning_text') %></p>
                   <ul class="mt-2 mb-0">
-                    <li>La suppression de toutes vos recettes sauvegardées</li>
-                    <li>La perte de vos données personnelles</li>
+                    <li><%= t('layout.delete_warning_recipes') %></li>
+                    <li><%= t('layout.delete_warning_data') %></li>
                   </ul>
                 </div>
-                <%= button_to "Supprimer définitivement mon compte",
+                <%= button_to t('layout.delete_confirm_btn'),
                     user_registration_path,
                     method: :delete,
                     id: "delete-account-btn",
                     class: "btn btn-danger w-100",
-                    data: { turbo_confirm: "Voulez-vous vraiment supprimer votre compte et toutes vos recettes ?" } %>
+                    data: { turbo_confirm: t('layout.delete_confirm_msg') } %>
 
                 <!-- Spinner de suppression -->
                 <div id="delete-spinner" class="text-center mt-3" style="display: none;">
                   <div class="spinner-border text-danger mb-2" role="status" style="width: 2.5rem; height: 2.5rem;">
-                    <span class="visually-hidden">Suppression en cours...</span>
+                    <span class="visually-hidden"><%= t('layout.delete_loading') %></span>
                   </div>
                   <div class="progress" style="height: 8px;">
                     <div id="delete-progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" role="progressbar" style="width: 0%;"></div>
                   </div>
-                  <p class="text-muted small mt-2">Suppression en cours...</p>
+                  <p class="text-muted small mt-2"><%= t('layout.delete_loading') %></p>
                 </div>
               </div>
             </div>

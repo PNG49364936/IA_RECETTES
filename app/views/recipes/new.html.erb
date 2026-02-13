@@ -3,7 +3,7 @@
   <div class="col-12 col-lg-7 col-xl-6">
     <div class="card shadow-sm">
       <div class="card-header bg-primary-custom">
-        <h2 class="card-title mb-0 text-white text-center">Créer ma recette</h2>
+        <h2 class="card-title mb-0 text-white text-center"><%= t('recipes.form_title') %></h2>
       </div>
       <div class="card-body p-4">
         <%= form_with model: @recipe, url: recipes_path, method: :post, local: true, html: { id: 'recipeForm', onsubmit: 'showSpinner()' } do |f| %>
@@ -12,7 +12,7 @@
             <div class="alert alert-danger border-0 shadow-sm">
               <div class="d-flex align-items-center mb-2">
                 <i class="bi bi-exclamation-circle-fill fs-4 me-2"></i>
-                <h5 class="mb-0 fw-bold">Veuillez corriger les erreurs suivantes</h5>
+                <h5 class="mb-0 fw-bold"><%= t('recipes.fix_errors') %></h5>
               </div>
               <ul class="mb-0 ps-4">
                 <% @recipe.errors[:base].each do |message| %>
@@ -24,12 +24,12 @@
 
           <!-- Type de plat -->
           <fieldset class="mb-4">
-            <legend class="form-label fw-bold">Type de plat</legend>
+            <legend class="form-label fw-bold"><%= t('recipes.choice_label') %></legend>
             <div class="d-flex flex-wrap gap-4">
               <% Recipe::CHOICES.each do |choice| %>
                 <div class="form-check">
                   <%= f.radio_button :choice, choice, class: "form-check-input", id: "choice_#{choice.parameterize}" %>
-                  <%= f.label :choice, choice, class: "form-check-label", for: "choice_#{choice.parameterize}" %>
+                  <%= f.label :choice, translate_choice(choice), class: "form-check-label", for: "choice_#{choice.parameterize}" %>
                 </div>
               <% end %>
             </div>
@@ -37,21 +37,21 @@
 
           <!-- Nombre de convives -->
           <fieldset class="mb-4">
-            <legend class="form-label fw-bold">Nombre de convives</legend>
+            <legend class="form-label fw-bold"><%= t('recipes.guests_label') %></legend>
             <%= f.select :guests,
-                options_for_select(Recipe::GUESTS_OPTIONS.map { |n| ["#{n} personne#{'s' if n > 1}", n] }, @recipe.guests),
-                { include_blank: "Sélectionner..." },
+                options_for_select(Recipe::GUESTS_OPTIONS.map { |n| [t('recipes.guests_option', count: n), n] }, @recipe.guests),
+                { include_blank: t('recipes.guests_select') },
                 class: "form-select", style: "max-width: 200px;" %>
           </fieldset>
 
           <!-- Régime alimentaire -->
           <fieldset class="mb-4">
-            <legend class="form-label fw-bold">Régime et restrictions</legend>
+            <legend class="form-label fw-bold"><%= t('recipes.diet_label') %></legend>
             <div class="d-flex flex-wrap gap-4">
               <% Recipe::DIETS.each do |diet| %>
                 <div class="form-check">
                   <%= f.radio_button :diet, diet, class: "form-check-input", id: "diet_#{diet.parameterize}" %>
-                  <%= f.label :diet, diet, class: "form-check-label", for: "diet_#{diet.parameterize}" %>
+                  <%= f.label :diet, translate_diet(diet), class: "form-check-label", for: "diet_#{diet.parameterize}" %>
                 </div>
               <% end %>
             </div>
@@ -59,12 +59,12 @@
 
           <!-- Tranche d'âge (visible uniquement si Enfant sélectionné) -->
           <fieldset class="mb-4 d-none" id="ageRangeFieldset">
-            <legend class="form-label fw-bold">Tranche d'âge de l'enfant</legend>
+            <legend class="form-label fw-bold"><%= t('recipes.age_range_label') %></legend>
             <div class="d-flex flex-wrap gap-4">
               <% Recipe::AGE_RANGES.each do |age_range| %>
                 <div class="form-check">
                   <%= f.radio_button :age_range, age_range, class: "form-check-input", id: "age_range_#{age_range.parameterize}" %>
-                  <%= f.label :age_range, age_range, class: "form-check-label", for: "age_range_#{age_range.parameterize}" %>
+                  <%= f.label :age_range, translate_age_range(age_range), class: "form-check-label", for: "age_range_#{age_range.parameterize}" %>
                 </div>
               <% end %>
             </div>
@@ -72,14 +72,14 @@
 
           <!-- Type de cuisine -->
           <fieldset class="mb-4">
-            <legend class="form-label fw-bold">Type de cuisine</legend>
+            <legend class="form-label fw-bold"><%= t('recipes.cuisine_label') %></legend>
             <div class="row">
               <% Recipe::CUISINES.each_slice(3) do |cuisine_group| %>
                 <% cuisine_group.each do |cuisine| %>
                   <div class="col-6 col-md-4 mb-2">
                     <div class="form-check">
                       <%= f.radio_button :cuisine, cuisine, class: "form-check-input", id: "cuisine_#{cuisine.parameterize}" %>
-                      <%= f.label :cuisine, cuisine, class: "form-check-label", for: "cuisine_#{cuisine.parameterize}" %>
+                      <%= f.label :cuisine, translate_cuisine(cuisine), class: "form-check-label", for: "cuisine_#{cuisine.parameterize}" %>
                     </div>
                   </div>
                 <% end %>
@@ -89,12 +89,12 @@
 
           <!-- Niveau de difficulté -->
           <fieldset class="mb-4">
-            <legend class="form-label fw-bold">Niveau de difficulté</legend>
+            <legend class="form-label fw-bold"><%= t('recipes.difficulty_label') %></legend>
             <div class="d-flex flex-wrap gap-4">
               <% Recipe::DIFFICULTIES.each do |difficulty| %>
                 <div class="form-check">
                   <%= f.radio_button :difficulty, difficulty, class: "form-check-input", id: "difficulty_#{difficulty.parameterize}" %>
-                  <%= f.label :difficulty, difficulty, class: "form-check-label", for: "difficulty_#{difficulty.parameterize}" %>
+                  <%= f.label :difficulty, translate_difficulty(difficulty), class: "form-check-label", for: "difficulty_#{difficulty.parameterize}" %>
                 </div>
               <% end %>
             </div>
@@ -102,13 +102,13 @@
 
           <!-- Temps total -->
           <fieldset class="mb-4">
-            <legend class="form-label fw-bold">Temps total (préparation + cuisson)</legend>
+            <legend class="form-label fw-bold"><%= t('recipes.duration_label') %></legend>
             <div class="row">
               <% Recipe::DURATIONS.each do |duration| %>
                 <div class="col-6 col-md-3 mb-2">
                   <div class="form-check">
                     <%= f.radio_button :duration, duration, class: "form-check-input", id: "duration_#{duration.parameterize}" %>
-                    <%= f.label :duration, duration, class: "form-check-label", for: "duration_#{duration.parameterize}" %>
+                    <%= f.label :duration, translate_duration(duration), class: "form-check-label", for: "duration_#{duration.parameterize}" %>
                   </div>
                 </div>
               <% end %>
@@ -117,7 +117,7 @@
 
           <!-- Équipement de cuisson (sélection multiple) -->
           <fieldset class="mb-4">
-            <legend class="form-label fw-bold">Équipement de cuisson <small class="text-muted">(plusieurs choix possibles)</small></legend>
+            <legend class="form-label fw-bold"><%= t('recipes.equipment_label') %> <small class="text-muted">(<%= t('recipes.equipment_hint') %>)</small></legend>
             <div class="row">
               <% Recipe::EQUIPMENTS.each do |equipment| %>
                 <div class="col-6 col-md-3 mb-2">
@@ -126,7 +126,7 @@
                         @recipe.equipments&.include?(equipment),
                         class: "form-check-input",
                         id: "equipment_#{equipment.parameterize}" %>
-                    <%= label_tag "equipment_#{equipment.parameterize}", equipment, class: "form-check-label" %>
+                    <%= label_tag "equipment_#{equipment.parameterize}", translate_equipment(equipment), class: "form-check-label" %>
                   </div>
                 </div>
               <% end %>
@@ -135,45 +135,45 @@
 
           <!-- Ingrédients souhaités -->
           <fieldset class="mb-4">
-            <legend class="form-label fw-bold">Ingrédients souhaités <small class="text-muted">(optionnel, 4 maximum)</small></legend>
+            <legend class="form-label fw-bold"><%= t('recipes.ingredients_label') %> <small class="text-muted">(<%= t('recipes.ingredients_hint') %>)</small></legend>
             <div class="row g-2">
               <div class="col-6 col-md-3">
-                <%= f.text_field :ingredient1, class: "form-control", placeholder: "Ingrédient 1" %>
+                <%= f.text_field :ingredient1, class: "form-control", placeholder: "#{t('recipes.ingredient_placeholder')} 1" %>
               </div>
               <div class="col-6 col-md-3">
-                <%= f.text_field :ingredient2, class: "form-control", placeholder: "Ingrédient 2" %>
+                <%= f.text_field :ingredient2, class: "form-control", placeholder: "#{t('recipes.ingredient_placeholder')} 2" %>
               </div>
               <div class="col-6 col-md-3">
-                <%= f.text_field :ingredient3, class: "form-control", placeholder: "Ingrédient 3" %>
+                <%= f.text_field :ingredient3, class: "form-control", placeholder: "#{t('recipes.ingredient_placeholder')} 3" %>
               </div>
               <div class="col-6 col-md-3">
-                <%= f.text_field :ingredient4, class: "form-control", placeholder: "Ingrédient 4" %>
+                <%= f.text_field :ingredient4, class: "form-control", placeholder: "#{t('recipes.ingredient_placeholder')} 4" %>
               </div>
             </div>
           </fieldset>
 
           <!-- Ingrédients non autorisés -->
           <fieldset class="mb-4">
-            <legend class="form-label fw-bold">Ingrédients non autorisés <small class="text-muted">(optionnel, 4 maximum)</small></legend>
+            <legend class="form-label fw-bold"><%= t('recipes.excluded_label') %> <small class="text-muted">(<%= t('recipes.excluded_hint') %>)</small></legend>
             <div class="row g-2">
               <div class="col-6 col-md-3">
-                <%= f.text_field :excluded1, class: "form-control", placeholder: "Ingrédient 1" %>
+                <%= f.text_field :excluded1, class: "form-control", placeholder: "#{t('recipes.ingredient_placeholder')} 1" %>
               </div>
               <div class="col-6 col-md-3">
-                <%= f.text_field :excluded2, class: "form-control", placeholder: "Ingrédient 2" %>
+                <%= f.text_field :excluded2, class: "form-control", placeholder: "#{t('recipes.ingredient_placeholder')} 2" %>
               </div>
               <div class="col-6 col-md-3">
-                <%= f.text_field :excluded3, class: "form-control", placeholder: "Ingrédient 3" %>
+                <%= f.text_field :excluded3, class: "form-control", placeholder: "#{t('recipes.ingredient_placeholder')} 3" %>
               </div>
               <div class="col-6 col-md-3">
-                <%= f.text_field :excluded4, class: "form-control", placeholder: "Ingrédient 4" %>
+                <%= f.text_field :excluded4, class: "form-control", placeholder: "#{t('recipes.ingredient_placeholder')} 4" %>
               </div>
             </div>
           </fieldset>
 
           <!-- Bouton de soumission -->
           <div class="d-grid gap-2 mt-4">
-            <%= f.submit "Générer ma recette", class: "btn btn-primary-custom btn-lg", data: { turbo: false }, onclick: "setTimeout(showSpinner, 100);" %>
+            <%= f.submit t('recipes.submit_btn'), class: "btn btn-primary-custom btn-lg", data: { turbo: false }, onclick: "setTimeout(showSpinner, 100);" %>
           </div>
 
         <% end %>
@@ -214,10 +214,10 @@
 <!-- Overlay de chargement -->
 <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.95); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
   <div class="spinner-border" role="status" style="width: 4rem; height: 4rem; color: #1F509A; border-width: 0.4rem;">
-    <span class="visually-hidden">Chargement...</span>
+    <span class="visually-hidden"><%= t('recipes.spinner.loading') %></span>
   </div>
-  <h4 class="mt-4" style="color: #1F509A; font-weight: 700;">Création de votre recette</h4>
-  <p id="loadingMessage" style="color: #4A3728; font-size: 1rem;">Analyse de vos préférences...</p>
+  <h4 class="mt-4" style="color: #1F509A; font-weight: 700;"><%= t('recipes.spinner.title') %></h4>
+  <p id="loadingMessage" style="color: #4A3728; font-size: 1rem;"></p>
 </div>
 
 <!-- Toast pour les notifications -->
@@ -225,8 +225,8 @@
   <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
     <div class="toast-header">
       <i class="bi bi-info-circle-fill me-2" id="toastIcon"></i>
-      <strong class="me-auto" id="toastTitle">Information</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Fermer"></button>
+      <strong class="me-auto" id="toastTitle"><%= t('recipes.toast.info') %></strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="<%= t('layout.close') %>"></button>
     </div>
     <div class="toast-body" id="toastMessage">
     </div>
@@ -235,15 +235,7 @@
 
 <script>
 // === Spinner de chargement ===
-var spinnerMessages = [
-  "Analyse de vos préférences...",
-  "Sélection des meilleurs ingrédients...",
-  "Notre chef prépare votre recette...",
-  "Rédaction des étapes de préparation...",
-  "Calcul des quantités...",
-  "Ajout des conseils du chef...",
-  "Finalisation de votre recette..."
-];
+var spinnerMessages = <%= raw I18n.t('recipes.spinner.messages').to_json %>;
 var spinnerMessageIndex = 0;
 var spinnerInterval;
 
@@ -267,6 +259,18 @@ function showSpinner() {
     }, 1500);
   }
 }
+
+// === Toast translations ===
+var toastTexts = {
+  gastronomique_title: "<%= j t('recipes.toast.gastronomique_title') %>",
+  gastronomique_msg: "<%= j t('recipes.toast.gastronomique_msg') %>",
+  cold_title: "<%= j t('recipes.toast.cold_title') %>",
+  cold_msg: "<%= j t('recipes.toast.cold_msg') %>",
+  child_title: "<%= j t('recipes.toast.child_title') %>",
+  child_msg: "<%= j t('recipes.toast.child_msg') %>",
+  pork_title: "<%= j t('recipes.toast.pork_title') %>",
+  pork_msg: "<%= j t('recipes.toast.pork_msg') %>"
+};
 
 function initFormBehaviors() {
   var form = document.getElementById('recipeForm');
@@ -320,8 +324,8 @@ function initFormBehaviors() {
         }
       }
       afficherNotification(
-        'Niveau Gastronomique',
-        'Le temps de préparation minimum est de 16 minutes pour ce niveau de difficulté.',
+        toastTexts.gastronomique_title,
+        toastTexts.gastronomique_msg,
         'attention'
       );
     } else {
@@ -360,8 +364,8 @@ function initFormBehaviors() {
         }
       });
       afficherNotification(
-        'Repas froid',
-        'La recette générée sera un plat froid ne nécessitant aucune cuisson.',
+        toastTexts.cold_title,
+        toastTexts.cold_msg,
         'cuisine'
       );
     } else if (clickedCheckbox.id === 'equipment_sans' && !clickedCheckbox.checked) {
@@ -413,8 +417,8 @@ function initFormBehaviors() {
       // Afficher le champ tranche d'âge
       ageRangeFieldset.classList.remove('d-none');
       afficherNotification(
-        'Recette pour enfant',
-        'Veuillez sélectionner la tranche d\'âge de l\'enfant.',
+        toastTexts.child_title,
+        toastTexts.child_msg,
         'info'
       );
     } else {
@@ -442,8 +446,8 @@ function initFormBehaviors() {
     if (selectedCuisine && selectedCuisine.value === 'Orientale') {
       if (field && field.value.toLowerCase().includes('porc')) {
         afficherNotification(
-          'Ingrédient non autorisé',
-          'Pas de viande de porc pour ce menu. Cet ingrédient sera ignoré.',
+          toastTexts.pork_title,
+          toastTexts.pork_msg,
           'attention'
         );
         field.value = '';
@@ -457,8 +461,8 @@ function initFormBehaviors() {
       ingredientInputs.forEach(function(field) {
         if (field.value.toLowerCase().includes('porc')) {
           afficherNotification(
-            'Ingrédient non autorisé',
-            'Pas de viande de porc pour ce menu. Cet ingrédient sera ignoré.',
+            toastTexts.pork_title,
+            toastTexts.pork_msg,
             'attention'
           );
           field.value = '';

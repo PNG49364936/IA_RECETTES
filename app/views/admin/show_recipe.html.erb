@@ -3,14 +3,14 @@
     <div class="card shadow-sm recipe-card">
       <div class="card-header bg-primary-custom">
         <h2 class="card-title mb-0 text-white text-center">
-          <%= @recipe.extract_title_from_content %> (<%= @recipe.choice %>)
+          <%= @recipe.extract_title_from_content %> (<%= translate_choice(@recipe.choice) %>)
         </h2>
       </div>
       <div class="card-body p-4">
         <div class="alert alert-info mb-3">
-          <strong>Auteur :</strong> <%= @recipe.user.email %>
+          <strong><%= t('admin.author') %> :</strong> <%= @recipe.user.email %>
           <br>
-          <strong>Créée le :</strong> <%= @recipe.created_at.strftime("%d/%m/%Y à %H:%M") %>
+          <strong><%= t('admin.created_at') %> :</strong> <%= @recipe.created_at.strftime("%d/%m/%Y à %H:%M") %>
         </div>
         <div class="recipe-content">
           <%= @markdown_content %>
@@ -18,8 +18,8 @@
       </div>
       <div class="card-footer bg-white">
         <div class="text-center">
-          <%= link_to "← Retour aux recettes", admin_recipes_path, class: "btn btn-outline-secondary" %>
-          <%= link_to "Administration", admin_path, class: "btn btn-outline-primary" %>
+          <%= link_to t('admin.back_to_recipes'), admin_recipes_path, class: "btn btn-outline-secondary" %>
+          <%= link_to t('admin.administration'), admin_path, class: "btn btn-outline-primary" %>
         </div>
       </div>
     </div>

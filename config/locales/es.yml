@@ -1,0 +1,390 @@
+es:
+  errors:
+    format: "%{attribute} → %{message}"
+    messages:
+      blank: "debe ser indicado"
+      inclusion: "selección inválida"
+      invalid: "no es válido"
+      not_a_number: "no es un número"
+      required: "debe ser indicado"
+
+  activemodel:
+    attributes:
+      recipe:
+        choice: "Tipo de plato"
+        guests: "Número de comensales"
+        diet: "Régimen alimentario"
+        cuisine: "Tipo de cocina"
+        duration: "Tiempo de preparación"
+        difficulty: "Nivel de dificultad"
+        equipments: "Equipamiento de cocción"
+    errors:
+      format: "%{attribute} → %{message}"
+      messages:
+        blank: "debe ser indicado"
+        inclusion: "selección inválida"
+        invalid: "no es válido"
+      models:
+        recipe:
+          attributes:
+            choice:
+              blank: "debe ser indicado"
+              inclusion: "selección inválida"
+            guests:
+              blank: "debe ser indicado"
+              inclusion: "selección inválida"
+            diet:
+              blank: "debe ser indicado"
+              inclusion: "selección inválida"
+            cuisine:
+              blank: "debe ser indicado"
+              inclusion: "selección inválida"
+            duration:
+              blank: "debe ser indicado"
+              inclusion: "selección inválida"
+            difficulty:
+              blank: "debe ser indicado"
+              inclusion: "selección inválida"
+            equipments:
+              blank: "debe ser indicado"
+
+  time:
+    formats:
+      short: "%d/%m/%Y %H:%M"
+      long: "%d de %B de %Y a las %H:%M"
+
+  date:
+    formats:
+      short: "%d/%m/%Y"
+      long: "%d de %B de %Y"
+    day_names:
+      - domingo
+      - lunes
+      - martes
+      - miércoles
+      - jueves
+      - viernes
+      - sábado
+    abbr_day_names:
+      - dom
+      - lun
+      - mar
+      - mié
+      - jue
+      - vie
+      - sáb
+    month_names:
+      - ~
+      - enero
+      - febrero
+      - marzo
+      - abril
+      - mayo
+      - junio
+      - julio
+      - agosto
+      - septiembre
+      - octubre
+      - noviembre
+      - diciembre
+    abbr_month_names:
+      - ~
+      - ene.
+      - feb.
+      - mar.
+      - abr.
+      - may.
+      - jun.
+      - jul.
+      - ago.
+      - sep.
+      - oct.
+      - nov.
+      - dic.
+
+  devise:
+    confirmations:
+      confirmed: "Su cuenta ha sido confirmada."
+      send_instructions: "Se le ha enviado un correo de confirmación."
+      send_paranoid_instructions: "Si su correo existe en nuestra base, recibirá un enlace de confirmación."
+    failure:
+      already_authenticated: "Ya está conectado/a."
+      inactive: "Su cuenta aún no ha sido activada."
+      invalid: "Correo electrónico o contraseña incorrectos."
+      locked: "Su cuenta está bloqueada."
+      last_attempt: "Último intento antes del bloqueo de su cuenta."
+      not_found_in_database: "Correo electrónico o contraseña incorrectos."
+      timeout: "Sesión expirada tras 10 minutos de inactividad. Por favor, vuelva a conectarse."
+      unauthenticated: "Debe conectarse para continuar."
+      unconfirmed: "Debe confirmar su cuenta antes de continuar."
+    mailer:
+      reset_password_instructions:
+        subject: "Instrucciones para restablecer su contraseña"
+    passwords:
+      no_token: "Token de restablecimiento faltante o inválido."
+      send_instructions: "Recibirá un correo con las instrucciones para restablecer su contraseña."
+      send_paranoid_instructions: "Si su correo existe en nuestra base, recibirá un correo de restablecimiento."
+      updated: "Su contraseña ha sido modificada. Ya está conectado/a."
+      updated_not_active: "Su contraseña ha sido modificada."
+    registrations:
+      destroyed: "Su cuenta ha sido eliminada."
+      signed_up: "¡Bienvenido/a! Su cuenta ha sido creada con éxito."
+      signed_up_but_inactive: "Su cuenta ha sido creada pero aún no está activada."
+      signed_up_but_locked: "Su cuenta ha sido creada pero está bloqueada."
+      signed_up_but_unconfirmed: "Se le ha enviado un correo de confirmación."
+      update_needs_confirmation: "Su cuenta ha sido actualizada."
+      updated: "Su cuenta ha sido actualizada."
+      updated_but_not_signed_in: "Su cuenta ha sido actualizada, pero debe volver a conectarse."
+    sessions:
+      signed_in: "Conexión exitosa."
+      signed_out: "Desconexión exitosa."
+      already_signed_out: "Desconexión exitosa."
+    unlocks:
+      send_instructions: "Recibirá un correo con las instrucciones de desbloqueo."
+      send_paranoid_instructions: "Si su cuenta existe, recibirá un correo de desbloqueo."
+      unlocked: "Su cuenta ha sido desbloqueada. Ya está conectado/a."
+
+  # === UI translations ===
+
+  layout:
+    app_name: "Recetas IA"
+    my_dashboard: "Mi panel de control"
+    my_account: "Mi cuenta"
+    logout: "Desconexión"
+    close: "Cerrar"
+    footer: "Recetas IA - Versión gratuita"
+    login_tab: "Conectarse"
+    register_tab: "Crear mi cuenta"
+    email_label: "Correo electrónico"
+    email_placeholder: "ejemplo@email.com"
+    password_label: "Contraseña"
+    password_placeholder: "Su contraseña"
+    remember_me: "Recordarme"
+    login_submit: "Conectarme"
+    login_loading: "Conexión en curso..."
+    forgot_password: "¿Contraseña olvidada?"
+    password_placeholder_register: "Mínimo 6 caracteres"
+    password_min_chars: "Mínimo 6 caracteres"
+    confirm_password: "Confirmar contraseña"
+    confirm_password_placeholder: "Repita su contraseña"
+    register_submit: "Crear mi cuenta"
+    register_loading: "Creación de la cuenta en curso..."
+    my_info_tab: "Mis datos"
+    delete_account_tab: "Eliminar mi cuenta"
+    member_since: "Miembro desde"
+    saved_recipes: "Recetas guardadas"
+    delete_warning_title: "¡Atención!"
+    delete_warning_text: "La eliminación de su cuenta es definitiva y conllevará:"
+    delete_warning_recipes: "La eliminación de todas sus recetas guardadas"
+    delete_warning_data: "La pérdida de sus datos personales"
+    delete_confirm_btn: "Eliminar definitivamente mi cuenta"
+    delete_confirm_msg: "¿Realmente desea eliminar su cuenta y todas sus recetas?"
+    delete_loading: "Eliminación en curso..."
+
+  home:
+    title: "Recetas IA"
+    subtitle: "Genere recetas personalizadas. Elija sus ingredientes, su tipo de cocina y deje que nuestro chef cree la receta perfecta para usted."
+    start_btn: "Comenzar"
+    cuisines: "Cocinas"
+    export_pdf: "Exportar PDF"
+    save: "Guardar"
+
+  dashboard:
+    title: "Mi panel de control"
+    create_recipe: "Crear una receta"
+    create_recipe_desc: "Genere una nueva receta personalizada con la IA"
+    create_btn: "Crear"
+    my_recipes: "Consultar mis recetas"
+    my_recipes_desc: "Encuentre todas sus recetas guardadas"
+    view_by_category: "Ver por categoría"
+    admin_title: "Administración del sitio"
+    admin_desc: "Gestionar los usuarios y las recetas"
+    admin_btn: "Administrar"
+    recipes_by_category: "Mis recetas por categoría"
+    max_recipes: "15 recetas máximo guardadas"
+    entrees: "Entradas"
+    plats: "Platos principales"
+    desserts: "Postres"
+    no_entree: "Ninguna entrada guardada"
+    no_plat: "Ningún plato principal guardado"
+    no_dessert: "Ningún postre guardado"
+
+  recipes:
+    form_title: "Crear mi receta"
+    fix_errors: "Por favor corrija los siguientes errores"
+    choice_label: "Tipo de plato"
+    guests_label: "Número de comensales"
+    guests_select: "Seleccionar..."
+    guests_option:
+      one: "%{count} persona"
+      other: "%{count} personas"
+    diet_label: "Régimen y restricciones"
+    age_range_label: "Rango de edad del niño"
+    cuisine_label: "Tipo de cocina"
+    difficulty_label: "Nivel de dificultad"
+    duration_label: "Tiempo total (preparación + cocción)"
+    equipment_label: "Equipamiento de cocción"
+    equipment_hint: "varias opciones posibles"
+    ingredients_label: "Ingredientes deseados"
+    ingredients_hint: "opcional, 4 máximo"
+    ingredient_placeholder: "Ingrediente"
+    excluded_label: "Ingredientes no autorizados"
+    excluded_hint: "opcional, 4 máximo"
+    submit_btn: "Generar mi receta"
+    your_recipe: "Su receta"
+    new_recipe: "Nueva receta"
+    print: "Imprimir"
+    save_recipe: "Guardar la receta"
+    download_pdf: "Descargar PDF"
+    download: "Descargar"
+    delete_recipe: "Eliminar la receta"
+    delete_confirm: "¿Está seguro de que desea eliminar esta receta?"
+    back_to_dashboard: "← Volver a Mi panel de control"
+    choices:
+      entree: "Entrada"
+      plat_principal: "Plato principal"
+      dessert: "Postre"
+    diets:
+      sans_restriction: "Sin restricción"
+      sans_gluten: "Sin gluten"
+      diabetique: "Diabético"
+      vegetarien: "Vegetariano"
+      healthy: "Healthy"
+      enfant: "Niño"
+    cuisines:
+      sans_preference: "Sin preferencia"
+      francaise: "Francesa"
+      italienne: "Italiana"
+      espagnole: "Española"
+      sud_americaine: "Sudamericana"
+      asiatique: "Asiática"
+      indienne: "India"
+      orientale: "Oriental"
+      fusion_creative: "Fusión(creativa)"
+      usa: "USA"
+    difficulties:
+      facile: "Fácil"
+      moyen: "Medio"
+      gastronomique: "Gastronómico"
+    durations:
+      express_15mn: "Express (<15min)"
+      rapide_15_30mn: "Rápido (15-30min)"
+      classique_30_60mn: "Clásico (30-60min)"
+      elabore_60mn: "Elaborado (>60min)"
+    equipments:
+      sans: "Sin"
+      plaques_de_cuisson: "Placas de cocción"
+      four: "Horno"
+      airfryer: "AirFryer"
+      thermomix: "Thermomix"
+    age_ranges:
+      2_a_5_ans: "2 a 5 años"
+      6_a_8_ans: "6 a 8 años"
+      8_a_10_ans: "8 a 10 años"
+    spinner:
+      title: "Creación de su receta"
+      loading: "Cargando..."
+      messages:
+        - "Analizando sus preferencias..."
+        - "Seleccionando los mejores ingredientes..."
+        - "Nuestro chef prepara su receta..."
+        - "Redactando los pasos de preparación..."
+        - "Calculando las cantidades..."
+        - "Añadiendo los consejos del chef..."
+        - "Finalizando su receta..."
+    toast:
+      info: "Información"
+      gastronomique_title: "Nivel Gastronómico"
+      gastronomique_msg: "El tiempo de preparación mínimo es de 16 minutos para este nivel de dificultad."
+      cold_title: "Comida fría"
+      cold_msg: "La receta generada será un plato frío que no requiere cocción."
+      child_title: "Receta para niño"
+      child_msg: "Por favor seleccione el rango de edad del niño."
+      pork_title: "Ingrediente no autorizado"
+      pork_msg: "No se permite cerdo en este menú. Este ingrediente será ignorado."
+    flash:
+      generation_error: "Se ha producido un error al generar la receta. Por favor, inténtelo de nuevo."
+      quota_reached: "Cuota de guardado alcanzada, elimine una receta"
+      already_saved: "Receta ya guardada"
+      saved_success: "¡Receta guardada con éxito!"
+      save_error: "Error al guardar."
+      expired: "Receta expirada o no encontrada."
+      deleted: "La receta ha sido eliminada."
+      not_found: "Receta no encontrada."
+
+  recipe_validations:
+    field_required: "%{field} → debe ser indicado"
+    field_invalid: "%{field} → selección inválida"
+    equipment_required: "Equipamiento de cocción → debe ser indicado"
+    gastronomique_express: "Tiempo de preparación → incompatible con el nivel Gastronómico (mínimo 16 minutos)"
+    age_range_required: "Rango de edad → debe ser indicado para el régimen Niño"
+    age_range_invalid: "Rango de edad → selección inválida"
+    already_saved: "Receta ya guardada"
+    field_labels:
+      choice: "Tipo de plato"
+      guests: "Número de comensales"
+      diet: "Régimen alimentario"
+      age_range: "Rango de edad"
+      cuisine: "Tipo de cocina"
+      duration: "Tiempo de preparación"
+      difficulty: "Nivel de dificultad"
+      equipments: "Equipamiento de cocción"
+
+  admin:
+    title: "Administración del sitio"
+    users_count: "Usuarios"
+    recipes_count: "Recetas"
+    admin_label: "Admin"
+    users_title: "Usuarios"
+    users_desc: "Consultar las cuentas de usuario"
+    view_users: "Ver los usuarios"
+    recipes_title: "Recetas"
+    recipes_desc: "Consultar todas las recetas"
+    view_recipes: "Ver las recetas"
+    back_to_dashboard: "← Volver a Mi panel de control"
+    email: "Email"
+    password: "Contraseña"
+    encrypted: "cifrada"
+    recipes: "Recetas"
+    joined: "Registrado el"
+    actions: "Acciones"
+    delete: "Eliminar"
+    delete_user_confirm: "¿Está seguro de que desea eliminar este usuario y todas sus recetas?"
+    back_to_admin: "← Volver a la administración"
+    all_recipes: "Todas las recetas"
+    entrees: "Entradas"
+    plats: "Platos principales"
+    desserts: "Postres"
+    no_entree: "Ninguna entrada"
+    no_plat: "Ningún plato principal"
+    no_dessert: "Ningún postre"
+    by: "por"
+    author: "Autor"
+    created_at: "Creada el"
+    back_to_recipes: "← Volver a las recetas"
+    administration: "Administración"
+    cannot_delete_admin: "Imposible eliminar un administrador"
+    user_deleted: "Usuario y sus recetas eliminados con éxito"
+    unauthorized: "Acceso no autorizado"
+
+  devise_views:
+    login_title: "Conexión"
+    register_title: "Crear mi cuenta"
+    forgot_title: "Contraseña olvidada"
+    email_label: "Correo electrónico"
+    email_placeholder: "ejemplo@email.com"
+    password_label: "Contraseña"
+    password_placeholder: "Su contraseña"
+    remember_me: "Recordarme"
+    login_submit: "Conectarme"
+    forgot_link: "¿Contraseña olvidada?"
+    create_account_link: "Crear una cuenta"
+    password_min: "Mínimo 6 caracteres"
+    password_placeholder_register: "Mínimo 6 caracteres"
+    confirm_password: "Confirmar contraseña"
+    confirm_placeholder: "Repita su contraseña"
+    register_submit: "Crear mi cuenta"
+    already_account: "¿Ya tiene cuenta? Conectarse"
+    forgot_instructions: "Introduzca su correo electrónico y le enviaremos un enlace para restablecer su contraseña."
+    send_instructions: "Enviar las instrucciones"
+    back_to_login: "Volver a la conexión"

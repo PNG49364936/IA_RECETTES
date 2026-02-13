@@ -3,7 +3,7 @@
     <div class="card shadow-sm recipe-card">
       <div class="card-header bg-primary-custom">
         <h2 class="card-title mb-0 text-white text-center">
-          Votre recette (<%= @recipe.choice %>)
+          <%= t('recipes.your_recipe') %> (<%= translate_choice(@recipe.choice) %>)
         </h2>
       </div>
       <div class="card-body p-4">
@@ -13,33 +13,33 @@
       </div>
       <div class="card-footer bg-white">
         <div class="d-flex flex-wrap justify-content-center gap-2">
-          <%= link_to "Nouvelle recette", new_recipe_path, class: "btn btn-primary-custom" %>
+          <%= link_to t('recipes.new_recipe'), new_recipe_path, class: "btn btn-primary-custom" %>
 
           <!-- Bouton Imprimer visible uniquement sur PC -->
           <button type="button" class="btn btn-secondary d-none d-lg-inline-block" onclick="window.print()">
-            Imprimer
+            <%= t('recipes.print') %>
           </button>
 
           <% if @is_new_recipe %>
             <!-- Recette non sauvegardée : bouton Sauvegarder -->
-            <%= button_to "Sauvegarder la recette", save_recipes_path(cache_key: @cache_key),
+            <%= button_to t('recipes.save_recipe'), save_recipes_path(cache_key: @cache_key),
                 method: :post,
                 class: "btn btn-success" %>
           <% else %>
             <!-- Recette sauvegardée : boutons PDF et Supprimer -->
             <%= link_to download_pdf_recipe_path(@recipe), class: "btn btn-outline-secondary", data: { turbo: false } do %>
-              <span class="d-none d-lg-inline">Télécharger PDF</span>
-              <span class="d-lg-none">Télécharger</span>
+              <span class="d-none d-lg-inline"><%= t('recipes.download_pdf') %></span>
+              <span class="d-lg-none"><%= t('recipes.download') %></span>
             <% end %>
 
-            <%= button_to "Supprimer la recette", recipe_path(@recipe), method: :delete,
+            <%= button_to t('recipes.delete_recipe'), recipe_path(@recipe), method: :delete,
                 class: "btn btn-outline-danger",
-                data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer cette recette ?" } %>
+                data: { turbo_confirm: t('recipes.delete_confirm') } %>
           <% end %>
         </div>
 
         <div class="text-center mt-3">
-          <%= link_to "← Retour à Mon tableau de bord", dashboard_path, class: "text-muted" %>
+          <%= link_to t('recipes.back_to_dashboard'), dashboard_path, class: "text-muted" %>
         </div>
       </div>
     </div>

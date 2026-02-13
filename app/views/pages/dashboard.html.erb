@@ -2,7 +2,7 @@
   <div class="dashboard-overlay"></div>
   <div class="row justify-content-center position-relative">
     <div class="col-12 col-lg-10">
-      <h1 class="mb-4" style="color: #1F509A;">Mon tableau de bord</h1>
+      <h1 class="mb-4" style="color: #1F509A;"><%= t('dashboard.title') %></h1>
 
     <div class="row g-4 mb-5">
       <!-- Créer une recette -->
@@ -10,9 +10,9 @@
         <div class="card h-100 shadow-sm border-0 dashboard-card">
           <div class="card-body text-center p-4">
             <div class="fs-1 mb-3">🍽️</div>
-            <h5 class="card-title">Créer une recette</h5>
-            <p class="card-text text-muted">Générez une nouvelle recette personnalisée avec l'IA</p>
-            <%= link_to "Créer", new_recipe_path, class: "btn btn-outline-primary", style: "border-color: #1F509A; color: #1F509A;" %>
+            <h5 class="card-title"><%= t('dashboard.create_recipe') %></h5>
+            <p class="card-text text-muted"><%= t('dashboard.create_recipe_desc') %></p>
+            <%= link_to t('dashboard.create_btn'), new_recipe_path, class: "btn btn-outline-primary", style: "border-color: #1F509A; color: #1F509A;" %>
           </div>
         </div>
       </div>
@@ -22,10 +22,10 @@
         <div class="card h-100 shadow-sm border-0 dashboard-card">
           <div class="card-body text-center p-4">
             <div class="fs-1 mb-3">📚</div>
-            <h5 class="card-title">Consulter mes recettes</h5>
-            <p class="card-text text-muted">Retrouvez toutes vos recettes sauvegardées</p>
+            <h5 class="card-title"><%= t('dashboard.my_recipes') %></h5>
+            <p class="card-text text-muted"><%= t('dashboard.my_recipes_desc') %></p>
             <button type="button" class="btn btn-outline-primary" style="border-color: #1F509A; color: #1F509A;" data-bs-toggle="collapse" data-bs-target="#recipeCategories">
-              Voir par catégorie
+              <%= t('dashboard.view_by_category') %>
             </button>
           </div>
         </div>
@@ -37,9 +37,9 @@
         <div class="card h-100 shadow-sm border-0 dashboard-card" style="border-left: 4px solid #dc3545 !important;">
           <div class="card-body text-center p-4">
             <div class="fs-1 mb-3">⚙️</div>
-            <h5 class="card-title">Administration du site</h5>
-            <p class="card-text text-muted">Gérer les utilisateurs et les recettes</p>
-            <%= link_to "Administrer", admin_path, class: "btn btn-danger" %>
+            <h5 class="card-title"><%= t('dashboard.admin_title') %></h5>
+            <p class="card-text text-muted"><%= t('dashboard.admin_desc') %></p>
+            <%= link_to t('dashboard.admin_btn'), admin_path, class: "btn btn-danger" %>
           </div>
         </div>
       </div>
@@ -50,14 +50,14 @@
     <div class="collapse" id="recipeCategories">
       <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
-          <h5 class="card-title mb-4">Mes recettes par catégorie <small class="text-muted">(15 recettes maximum sauvegardées - <%= current_user.recipes.count %>/15)</small></h5>
+          <h5 class="card-title mb-4"><%= t('dashboard.recipes_by_category') %> <small class="text-muted">(<%= t('dashboard.max_recipes') %> - <%= current_user.recipes.count %>/15)</small></h5>
 
           <!-- Entrées -->
           <div class="category-section mb-4">
             <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
                     type="button" data-bs-toggle="collapse" data-bs-target="#entreesList">
               <span class="category-icon me-2">🥗</span>
-              <span class="fw-bold" style="color: #1F509A;">Entrées</span>
+              <span class="fw-bold" style="color: #1F509A;"><%= t('dashboard.entrees') %></span>
               <span class="badge bg-secondary ms-2"><%= current_user.recipes.where(choice: 'Entrée').count %></span>
               <i class="bi bi-chevron-down ms-auto"></i>
             </button>
@@ -73,7 +73,7 @@
                   <% end %>
                 </div>
               <% else %>
-                <p class="text-muted small ms-4">Aucune entrée sauvegardée</p>
+                <p class="text-muted small ms-4"><%= t('dashboard.no_entree') %></p>
               <% end %>
             </div>
           </div>
@@ -83,7 +83,7 @@
             <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
                     type="button" data-bs-toggle="collapse" data-bs-target="#platsList">
               <span class="category-icon me-2">🍝</span>
-              <span class="fw-bold" style="color: #1F509A;">Plats principaux</span>
+              <span class="fw-bold" style="color: #1F509A;"><%= t('dashboard.plats') %></span>
               <span class="badge bg-secondary ms-2"><%= current_user.recipes.where(choice: 'Plat principal').count %></span>
               <i class="bi bi-chevron-down ms-auto"></i>
             </button>
@@ -99,7 +99,7 @@
                   <% end %>
                 </div>
               <% else %>
-                <p class="text-muted small ms-4">Aucun plat principal sauvegardé</p>
+                <p class="text-muted small ms-4"><%= t('dashboard.no_plat') %></p>
               <% end %>
             </div>
           </div>
@@ -109,7 +109,7 @@
             <button class="btn btn-link text-decoration-none p-0 d-flex align-items-center w-100"
                     type="button" data-bs-toggle="collapse" data-bs-target="#dessertsList">
               <span class="category-icon me-2">🍰</span>
-              <span class="fw-bold" style="color: #1F509A;">Desserts</span>
+              <span class="fw-bold" style="color: #1F509A;"><%= t('dashboard.desserts') %></span>
               <span class="badge bg-secondary ms-2"><%= current_user.recipes.where(choice: 'Dessert').count %></span>
               <i class="bi bi-chevron-down ms-auto"></i>
             </button>
@@ -125,7 +125,7 @@
                   <% end %>
                 </div>
               <% else %>
-                <p class="text-muted small ms-4">Aucun dessert sauvegardé</p>
+                <p class="text-muted small ms-4"><%= t('dashboard.no_dessert') %></p>
               <% end %>
             </div>
           </div>

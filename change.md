@@ -1,0 +1,1 @@
+les utilisateurs souhaitent avoir une version en langues espagnol. adapter l'app

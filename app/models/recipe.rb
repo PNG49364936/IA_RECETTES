@@ -12,23 +12,16 @@ class Recipe < ApplicationRecord
 
   serialize :equipments, coder: JSON
 
-  validates :title, uniqueness: { scope: :user_id, message: "Recette déjà sauvegardée" }, allow_blank: true
+  validates :title, uniqueness: { scope: :user_id, message: -> (object, data) { I18n.t('recipe_validations.already_saved') } }, allow_blank: true
 
   validate :validate_all_fields
   validate :at_least_one_equipment
   validate :gastronomique_not_express
   validate :age_range_required_for_enfant
 
-  FIELD_LABELS = {
-    choice: "Type de plat",
-    guests: "Nombre de convives",
-    diet: "Régime alimentaire",
-    age_range: "Tranche d'âge",
-    cuisine: "Type de cuisine",
-    duration: "Temps de préparation",
-    difficulty: "Niveau de difficulté",
-    equipments: "Équipement de cuisson"
-  }.freeze
+  def field_label(field)
+    I18n.t("recipe_validations.field_labels.#{field}")
+  end
 
   def validate_all_fields
     validate_field(:choice, CHOICES)
@@ -41,12 +34,12 @@ class Recipe < ApplicationRecord
 
   def validate_field(field, valid_options)
     value = send(field)
-    label = FIELD_LABELS[field]
+    label = field_label(field)
 
     if value.blank?
-      errors.add(:base, "#{label} → doit être renseigné")
+      errors.add(:base, I18n.t('recipe_validations.field_required', field: label))
     elsif !valid_options.include?(value)
-      errors.add(:base, "#{label} → sélection invalide")
+      errors.add(:base, I18n.t('recipe_validations.field_invalid', field: label))
     end
   end
 
@@ -106,8 +99,8 @@ class Recipe < ApplicationRecord
     end
 
     # Méthode 2: Prendre le texte avant "**Temps" ou "Temps de préparation"
-    if content.include?("**Temps")
-      titre = content.split("**Temps").first.strip
+    if content.include?("**Temps") || content.include?("**Tiempo")
+      titre = content.split(/\*\*Temps|\*\*Tiempo/).first.strip
       return titre if titre.present? && titre.length < 100
     end
 
@@ -124,22 +117,22 @@ class Recipe < ApplicationRecord
 
   def at_least_one_equipment
     if equipments.blank? || equipments.reject(&:blank?).empty?
-      errors.add(:base, "#{FIELD_LABELS[:equipments]} → doit être renseigné")
+      errors.add(:base, I18n.t('recipe_validations.equipment_required'))
     end
   end
 
   def gastronomique_not_express
     if difficulty == 'Gastronomique' && duration == 'Express (<15mn)'
-      errors.add(:base, "#{FIELD_LABELS[:duration]} → incompatible avec le niveau Gastronomique (minimum 16 minutes)")
+      errors.add(:base, I18n.t('recipe_validations.gastronomique_express'))
     end
   end
 
   def age_range_required_for_enfant
     if diet == 'Enfant'
       if age_range.blank?
-        errors.add(:base, "#{FIELD_LABELS[:age_range]} → doit être renseignée pour le régime Enfant")
+        errors.add(:base, I18n.t('recipe_validations.age_range_required'))
       elsif !AGE_RANGES.include?(age_range)
-        errors.add(:base, "#{FIELD_LABELS[:age_range]} → sélection invalide")
+        errors.add(:base, I18n.t('recipe_validations.age_range_invalid'))
       end
     end
   end

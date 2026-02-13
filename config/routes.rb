@@ -25,6 +25,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Changement de langue
+  get 'set_locale/:locale', to: 'pages#set_locale', as: 'set_locale'
+
   # Health check pour déploiement
   get "up" => "rails/health#show", as: :rails_health_check
 end

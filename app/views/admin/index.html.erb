@@ -1,26 +1,26 @@
 <div class="row justify-content-center">
   <div class="col-12 col-lg-10">
-    <h1 class="mb-4" style="color: #1F509A;">Administration du site</h1>
+    <h1 class="mb-4" style="color: #1F509A;"><%= t('admin.title') %></h1>
 
     <div class="row g-4 mb-4">
       <div class="col-12 col-md-4">
         <div class="card shadow-sm border-0 text-center p-3">
           <div class="fs-1 mb-2">👥</div>
           <h3><%= @total_users %></h3>
-          <p class="text-muted mb-0">Utilisateurs</p>
+          <p class="text-muted mb-0"><%= t('admin.users_count') %></p>
         </div>
       </div>
       <div class="col-12 col-md-4">
         <div class="card shadow-sm border-0 text-center p-3">
           <div class="fs-1 mb-2">📖</div>
           <h3><%= @total_recipes %></h3>
-          <p class="text-muted mb-0">Recettes</p>
+          <p class="text-muted mb-0"><%= t('admin.recipes_count') %></p>
         </div>
       </div>
       <div class="col-12 col-md-4">
         <div class="card shadow-sm border-0 text-center p-3">
           <div class="fs-1 mb-2">🔐</div>
-          <h3>Admin</h3>
+          <h3><%= t('admin.admin_label') %></h3>
           <p class="text-muted mb-0"><%= current_user.email %></p>
         </div>
       </div>
@@ -31,9 +31,9 @@
         <div class="card h-100 shadow-sm border-0">
           <div class="card-body text-center p-4">
             <div class="fs-1 mb-3">👥</div>
-            <h5 class="card-title">Utilisateurs</h5>
-            <p class="card-text text-muted">Consulter les comptes utilisateurs</p>
-            <%= link_to "Voir les utilisateurs", admin_users_path, class: "btn btn-outline-primary", style: "border-color: #1F509A; color: #1F509A;" %>
+            <h5 class="card-title"><%= t('admin.users_title') %></h5>
+            <p class="card-text text-muted"><%= t('admin.users_desc') %></p>
+            <%= link_to t('admin.view_users'), admin_users_path, class: "btn btn-outline-primary", style: "border-color: #1F509A; color: #1F509A;" %>
           </div>
         </div>
       </div>
@@ -42,16 +42,16 @@
         <div class="card h-100 shadow-sm border-0">
           <div class="card-body text-center p-4">
             <div class="fs-1 mb-3">📖</div>
-            <h5 class="card-title">Recettes</h5>
-            <p class="card-text text-muted">Consulter toutes les recettes</p>
-            <%= link_to "Voir les recettes", admin_recipes_path, class: "btn btn-outline-primary", style: "border-color: #1F509A; color: #1F509A;" %>
+            <h5 class="card-title"><%= t('admin.recipes_title') %></h5>
+            <p class="card-text text-muted"><%= t('admin.recipes_desc') %></p>
+            <%= link_to t('admin.view_recipes'), admin_recipes_path, class: "btn btn-outline-primary", style: "border-color: #1F509A; color: #1F509A;" %>
           </div>
         </div>
       </div>
     </div>
 
     <div class="text-center mt-4">
-      <%= link_to "← Retour à Mon tableau de bord", dashboard_path, class: "text-muted", style: "font-weight: 900;" %>
+      <%= link_to t('admin.back_to_dashboard'), dashboard_path, class: "text-muted", style: "font-weight: 900;" %>
     </div>
   </div>
 </div>

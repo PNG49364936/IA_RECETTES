@@ -2,7 +2,7 @@
   <div class="col-12 col-md-6 col-lg-4">
     <div class="card shadow-lg border-0">
       <div class="card-header text-center text-white" style="background-color: #1F509A;">
-        <h4 class="mb-0">Créer mon compte</h4>
+        <h4 class="mb-0"><%= t('devise_views.register_title') %></h4>
       </div>
       <div class="card-body p-4">
         <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
@@ -15,30 +15,30 @@
           <% end %>
 
           <div class="mb-3">
-            <%= f.label :email, "Adresse e-mail", class: "form-label" %>
-            <%= f.email_field :email, class: "form-control", placeholder: "exemple@email.com", autofocus: true, autocomplete: "email" %>
+            <%= f.label :email, t('devise_views.email_label'), class: "form-label" %>
+            <%= f.email_field :email, class: "form-control", placeholder: t('devise_views.email_placeholder'), autofocus: true, autocomplete: "email" %>
           </div>
 
           <div class="mb-3">
-            <%= f.label :password, "Mot de passe", class: "form-label" %>
-            <%= f.password_field :password, class: "form-control", placeholder: "Minimum 6 caractères", autocomplete: "new-password" %>
-            <div class="form-text">Minimum 6 caractères</div>
+            <%= f.label :password, t('devise_views.password_label'), class: "form-label" %>
+            <%= f.password_field :password, class: "form-control", placeholder: t('devise_views.password_placeholder_register'), autocomplete: "new-password" %>
+            <div class="form-text"><%= t('devise_views.password_min') %></div>
           </div>
 
           <div class="mb-3">
-            <%= f.label :password_confirmation, "Confirmer le mot de passe", class: "form-label" %>
-            <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Répétez votre mot de passe", autocomplete: "new-password" %>
+            <%= f.label :password_confirmation, t('devise_views.confirm_password'), class: "form-label" %>
+            <%= f.password_field :password_confirmation, class: "form-control", placeholder: t('devise_views.confirm_placeholder'), autocomplete: "new-password" %>
           </div>
 
           <div class="d-grid">
-            <%= f.submit "Créer mon compte", class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
+            <%= f.submit t('devise_views.register_submit'), class: "btn btn-primary", style: "background-color: #1F509A; border-color: #1F509A;" %>
           </div>
         <% end %>
 
         <hr class="my-4">
 
         <div class="text-center">
-          <%= link_to "Déjà un compte ? Se connecter", new_user_session_path, class: "text-muted" %>
+          <%= link_to t('devise_views.already_account'), new_user_session_path, class: "text-muted" %>
         </div>
       </div>
     </div>
