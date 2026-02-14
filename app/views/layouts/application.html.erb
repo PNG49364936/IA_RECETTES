@@ -22,9 +22,9 @@
           <!-- Sélecteur de langue -->
           <div class="me-3">
             <% if I18n.locale == :fr %>
-              <%= link_to "ES", set_locale_path(:es), class: "text-white text-decoration-none small fw-bold", style: "opacity: 0.7;" %>
+              <%= link_to "ES", set_locale_path(:es), class: "text-white text-decoration-none small fw-bolder" %>
             <% else %>
-              <%= link_to "FR", set_locale_path(:fr), class: "text-white text-decoration-none small fw-bold", style: "opacity: 0.7;" %>
+              <%= link_to "FR", set_locale_path(:fr), class: "text-white text-decoration-none small fw-bolder" %>
             <% end %>
           </div>
           <% if user_signed_in? %>
