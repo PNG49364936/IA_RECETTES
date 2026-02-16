@@ -140,11 +140,16 @@
   .dashboard-background {
     position: relative;
     min-height: 100vh;
-    background-image: url('<%= asset_path("WORLD CUISINE.jpg") %>');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
     padding: 2rem 0;
+  }
+
+  @media (min-width: 992px) {
+    .dashboard-background {
+      background-image: url('<%= asset_path("WORLD CUISINE.jpg") %>');
+    }
   }
 
   .dashboard-overlay {
